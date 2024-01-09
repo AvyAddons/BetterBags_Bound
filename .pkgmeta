@@ -1,0 +1,19 @@
+package-as: BetterBags_Bound
+enable-nolib-creation: no
+
+move-folders:
+    BetterBags_Bound/BetterBags_Bound: BetterBags_Bound
+
+manual-changelog:
+    filename: CHANGELOG.md
+    markup-type: markdown
+
+license-output: LICENSE.txt
+
+ignore:
+    - annotations.lua
+    - CHANGELOG.md
+    - CODE_OF_CONDUCT.md
+    - README.md
+    - .editorconfig
+    - .github

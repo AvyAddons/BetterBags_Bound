@@ -1,0 +1,26 @@
+## Interface: 30403
+
+## Title: BetterBags - Bound
+## Notes: Adds BoE & BoA filters to BetterBags.
+## Author: Avyiel
+## Version: @project-version@
+## X-Date: @project-date-iso@
+
+## DefaultState: Enabled
+## Dependencies: BetterBags
+#@alpha@
+## OptionalDeps: BugSack, BugGrabber
+#@end-alpha@
+
+## X-Date: @project-date-iso@
+## X-Category: Bags & Inventory
+## X-License: MIT
+
+## X-Curse-Project-ID:
+## X-Wago-ID:
+
+Main.lua
+
+#@debug@
+## Version: DEV
+#@end-debug@
