@@ -16,8 +16,8 @@
 ## X-Category: Bags & Inventory
 ## X-License: MIT
 
-## X-Curse-Project-ID:
-## X-Wago-ID:
+## X-Curse-Project-ID: 960358
+## X-Wago-ID: ANz0qMK4
 
 Main.lua
 
