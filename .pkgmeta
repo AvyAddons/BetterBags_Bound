@@ -1,9 +1,6 @@
 package-as: BetterBags_Bound
 enable-nolib-creation: no
 
-move-folders:
-    BetterBags_Bound/BetterBags_Bound: BetterBags_Bound
-
 manual-changelog:
     filename: CHANGELOG.md
     markup-type: markdown
