@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file. Be aware th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.1.1] 2024-07-13
+### Changed
+- Bump TOC to 1.15.3
+
 ## [1.1.0] 2024-05-08
 ### Added
 - Add support for Cataclysm Classic 4.4.0 (courtesy of rissole)
