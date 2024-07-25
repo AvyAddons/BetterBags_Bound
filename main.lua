@@ -35,6 +35,13 @@ local IsRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 -- Let's keep this name for all scanner addons.
 local _SCANNER = "AVY_ScannerTooltip"
 
+-- Use this API to delete all the items in a category. This will not delete the category itself,
+-- but will empty it's item list from the persistant store. This is useful if you want to
+-- make sure the user's categories are in a known state, i.e. on every load of your plugin,
+-- you wipe and then add all the items to the category.
+categories:WipeCategory(L:G(S_BOA))
+categories:WipeCategory(L:G(S_BOE))
+
 -- Use this API to register a function that will be called for every item in the player's bags.
 -- The function you provide will be given an ItemData table, which contains all properties of an item
 -- loaded from the Blizzard API. From here, you can call any custom code you want to analyze the item.
