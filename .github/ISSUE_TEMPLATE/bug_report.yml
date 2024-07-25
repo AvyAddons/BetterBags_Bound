@@ -27,8 +27,8 @@ body:
       label: World of Warcraft Flavor
       description: What version of World of Warcraft are are you running?
       options:
-        - Retail (Dragonflight)
-        - Classic Era
+        - Retail (The War Within)
+        - Classic Era / Hardcore
         - The Burning Crusade
         - Wrath of the Lich King
         - Beta / PTR
@@ -42,9 +42,7 @@ body:
       description: Did you try having BetterBags and BetterBags_Bound as the only enabled addons and everything else (especially other BetterBags plugins) disabled?
       options:
         - label: "Yes"
-        - label: "No"
-    validations:
-      required: true
+          required: true
 
   - type: textarea
     attributes:
