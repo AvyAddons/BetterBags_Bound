@@ -1,11 +1,16 @@
-# BetterBags - BoE & BoA Change Log
+# BetterBags - BoE & BoA Changelog
 All notable changes to this project will be documented in this file. Be aware that the [Unreleased] features are not yet available in the official tagged builds.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.2.0] 2024-07-25
+### Changed
+- Flush category on initialization to prevent stale items
+- Bump Retail TOC to 11.0, 11.0.2
+
 ## [1.1.1] 2024-07-13
 ### Changed
-- Bump TOC to 1.15.3
+- Bump Vanilla TOC to 1.15.3
 
 ## [1.1.0] 2024-05-08
 ### Added
