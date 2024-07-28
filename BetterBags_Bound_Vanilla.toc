@@ -6,6 +6,7 @@
 ## Version: @project-version@
 ## X-Date: @project-date-iso@
 ## IconTexture: Interface\Icons\inv_misc_bag_15
+## SavedVariables: BetterBags_Bound_SavedVars
 
 ## DefaultState: Enabled
 ## Dependencies: BetterBags
@@ -21,6 +22,8 @@
 ## X-Wago-ID: ANz0qMK4
 
 main.lua
+filter.lua
+config.lua
 
 #@debug@
 ## Version: DEV
