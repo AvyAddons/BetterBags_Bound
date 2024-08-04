@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file. Be aware th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Added
+- Plugin settings panel is now available
+
 ## [1.2.0] 2024-07-25
 ### Changed
 - Flush category on initialization to prevent stale items
