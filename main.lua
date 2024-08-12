@@ -34,6 +34,7 @@ addon.db = {
 	enableWoe = true,
 	enableBoe = true,
 	enableBoa = true,
+	onlyEquippable = true,
 	wipeOnLoad = true,
 }
 

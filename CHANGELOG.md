@@ -11,6 +11,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Removed
 - Removed support for 10.2.7
 
+### Changed
+- Only categorize equippable items. You can disable this in the settings.
+
 ## [1.2.0] 2024-07-25
 ### Changed
 - Flush category on initialization to prevent stale items

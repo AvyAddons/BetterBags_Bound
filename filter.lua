@@ -51,6 +51,7 @@ end
 -----------------------------------------------------------
 local CreateFrame = _G.CreateFrame
 local C_TooltipInfo_GetBagItem = C_TooltipInfo and C_TooltipInfo.GetBagItem
+local C_Item_IsEquippableItem = C_Item and C_Item.IsEquippableItem
 
 --- Whether we have C_TooltipInfo APIs available
 local IsRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
@@ -158,9 +159,9 @@ local function CategoryFilter(data)
 	local bindType = data.itemInfo.bindType
 	local equippable = C_Item_IsEquippableItem(data.itemInfo.itemID)
 
-	-- Only parse items that are Common (1) and above, and are of type BoP, BoE, and BoU
+	-- Only parse items that are Common (1) and above, and are of type BoP, BoE, BoU, BoA, BoW
 	local junk = quality ~= nil and quality == 0
-	if (not junk or (bindType ~= nil and bindType > 0 and bindType < 4)) then
+	if ((not junk and equippable) or (bindType ~= nil and bindType > 0 and (bindType < 4 or bindType > 6))) then
 		local category = addon:GetItemCategory(data.bagid, data.slotid, data.itemInfo)
 		if (category ~= nil and addon:CategoryEnabled(category)) then
 			return L:G(category)

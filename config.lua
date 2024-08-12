@@ -50,7 +50,7 @@ local options = {
 			},
 			enableWoe = {
 				type = "toggle",
-				order = 0,
+				order = 1,
 				name = L:G("Category: WoE"),
 				desc = L:G("If enabled, will categorize WoE items."),
 				get = function()
@@ -86,6 +86,19 @@ local options = {
 						Categories:DeleteCategory(L:G(addon.S_BOA))
 					end
 					Events:SendMessage('bags/FullRefreshAll')
+				end,
+			},
+			onlyEquippable = {
+				type = "toggle",
+				width = "full",
+				order = 3,
+				name = L:G("Only Equippable"),
+				desc = L:G("Only categorize equippable items. This prevents a multitude of items from being lumped into \"Warbound\". Requires a reload."),
+				get = function()
+					return addon.db.onlyEquippable
+				end,
+				set = function(_, value)
+					addon.db.onlyEquippable = value
 				end,
 			},
 			wipeOnLoad = {
