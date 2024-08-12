@@ -21,6 +21,32 @@ local L = BetterBags:GetModule('Localization')
 local _G = _G
 local string_find = string.find
 
+---@param inputString string
+---@param patterns string[]
+---@return string[]|nil
+local function string_findm(inputString, patterns)
+	local results   = {}
+	local keys = {}
+
+	for i = 1, #patterns do
+		local patternToMatch = patterns[i]
+		local start, endd = string_find(inputString, patternToMatch)
+		if start ~= nil then
+			results[patternToMatch] = { start, endd }
+			table.insert(keys, start)
+		end
+	end
+
+	if #keys == 0 then return nil end
+
+	table.sort(keys)
+	local finalArray = {}
+	for i = 1, #keys do
+		table.insert(finalArray, results[keys[i]])
+	end
+	return finalArray
+end
+
 -- WoW API
 -----------------------------------------------------------
 local CreateFrame = _G.CreateFrame
@@ -32,6 +58,8 @@ local IsRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 -----------------------------------------------------------
 -- Filter Setup
 -----------------------------------------------------------
+local BOA_STRINGS = { ITEM_ACCOUNTBOUND, ITEM_BNETACCOUNTBOUND, ITEM_BIND_TO_ACCOUNT, ITEM_BIND_TO_BNETACCOUNT }
+local WOE_STRINGS = { ITEM_ACCOUNTBOUND_UNTIL_EQUIP, ITEM_BIND_TO_ACCOUNT_UNTIL_EQUIP }
 
 -- Tooltip used for scanning.
 local _SCANNER = "AVY_ScannerTooltip"
@@ -89,10 +117,12 @@ end
 ---@return string|nil
 function addon:GetBindString(msg)
 	if (msg) then
-		if (string_find(msg, ITEM_ACCOUNTBOUND) or string_find(msg, ITEM_BNETACCOUNTBOUND) or string_find(msg, ITEM_BIND_TO_BNETACCOUNT)) then
-			return addon.S_BOA
-		elseif (string_find(msg, ITEM_BIND_ON_EQUIP)) then
+		if (string_find(msg, ITEM_BIND_ON_EQUIP)) then
 			return addon.S_BOE
+		elseif (string_findm(msg, WOE_STRINGS)) then
+			return addon.S_WOE
+		elseif (string_findm(msg, BOA_STRINGS)) then
+			return addon.S_BOA
 		end
 	end
 end
@@ -116,6 +146,8 @@ function addon:CategoryEnabled(category)
 		return addon.db.enableBoa
 	elseif (category == addon.S_BOE) then
 		return addon.db.enableBoe
+	elseif (category == addon.S_WOE) then
+		return addon.db.enableWoe
 	end
 	return false
 end
@@ -124,6 +156,7 @@ end
 local function CategoryFilter(data)
 	local quality = data.itemInfo.itemQuality
 	local bindType = data.itemInfo.bindType
+	local equippable = C_Item_IsEquippableItem(data.itemInfo.itemID)
 
 	-- Only parse items that are Common (1) and above, and are of type BoP, BoE, and BoU
 	local junk = quality ~= nil and quality == 0

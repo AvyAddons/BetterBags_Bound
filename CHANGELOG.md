@@ -5,7 +5,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 ### Added
+- Support for Warbound until Equipped (WoE)
 - Plugin settings panel is now available
+
+### Removed
+- Removed support for 10.2.7
 
 ## [1.2.0] 2024-07-25
 ### Changed

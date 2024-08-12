@@ -31,6 +31,7 @@ local CreateFrame = _G.CreateFrame
 -- Default settings.
 -----------------------------------------------------------
 addon.db = {
+	enableWoe = true,
 	enableBoe = true,
 	enableBoa = true,
 	wipeOnLoad = true,
@@ -40,6 +41,7 @@ addon.db = {
 -----------------------------------------------------------
 addon.S_BOA = "BoA"
 addon.S_BOE = "BoE"
+addon.S_WOE = "WoE"
 
 -- Addon Core
 addon.eventFrame = CreateFrame("Frame", addonName .. "EventFrame", UIParent)

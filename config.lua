@@ -48,6 +48,26 @@ local options = {
 					Events:SendMessage('bags/FullRefreshAll')
 				end,
 			},
+			enableWoe = {
+				type = "toggle",
+				order = 0,
+				name = L:G("Category: WoE"),
+				desc = L:G("If enabled, will categorize WoE items."),
+				get = function()
+					return addon.db.enableWoe
+				end,
+				set = function(_, value)
+					addon.db.enableWoe = value
+					if (addon.db.enableWoe) then
+						Categories:CreateCategory(L:G(addon.S_WOE))
+						Categories:WipeCategory(L:G(addon.S_WOE))
+					else
+						Categories:WipeCategory(L:G(addon.S_WOE))
+						Categories:DeleteCategory(L:G(addon.S_WOE))
+					end
+					Events:SendMessage('bags/FullRefreshAll')
+				end,
+			},
 			enableBoa = {
 				type = "toggle",
 				order = 2,
