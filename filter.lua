@@ -12,6 +12,9 @@ local Categories = BetterBags:GetModule('Categories')
 ---@class Events: AceModule
 local Events = BetterBags:GetModule('Events')
 
+---@class Database: AceModule
+local Database = BetterBags:GetModule('Database')
+
 -- Use the L:G() function to get the localized string.
 ---@class Localization: AceModule
 local L = BetterBags:GetModule('Localization')
@@ -25,8 +28,8 @@ local string_find = string.find
 ---@param patterns string[]
 ---@return string[]|nil
 local function string_findm(inputString, patterns)
-	local results   = {}
-	local keys = {}
+	local results = {}
+	local keys    = {}
 
 	for i = 1, #patterns do
 		local patternToMatch = patterns[i]
@@ -49,7 +52,7 @@ end
 
 -- WoW API
 -----------------------------------------------------------
-local CreateFrame = _G.CreateFrame
+local CreateFrame = CreateFrame
 local C_TooltipInfo_GetBagItem = C_TooltipInfo and C_TooltipInfo.GetBagItem
 local C_Item_IsEquippableItem = C_Item and C_Item.IsEquippableItem
 
@@ -88,6 +91,7 @@ function addon:GetItemCategory(bagIndex, slotIndex, itemInfo)
 			end
 		end
 	else
+		if itemInfo == nil then return end
 		if (itemInfo.bindType == 2 or itemInfo.bindType == 3) then
 			local Scanner = CreateFrame("GameTooltip", _SCANNER .. itemInfo.itemGUID, nil, "GameTooltipTemplate")
 			Scanner:SetOwner(WorldFrame, "ANCHOR_NONE")
@@ -169,6 +173,35 @@ local function CategoryFilter(data)
 	end
 
 	return nil
+end
+
+local function GetCategory(itemID)
+	local category = Database:GetItemCategoryByItemID(itemID)
+	if (category and category.name) then return category.name end
+	-- this might break due to using internals of the Categories module
+	category = Categories.ephemeralCategoryByItemID[itemID]
+	if (category and category.name) then return category.name end
+	return nil
+end
+
+---@param slot number
+function addon:RemoveBindConfirmFromCategory(slot)
+	if addon.bindConfirm == nil then return end
+	if not IsRetail then return end
+
+	local id = addon.bindConfirm.id
+	local itemID = C_Item.GetItemID({ equipmentSlotIndex = slot })
+
+	local category = addon.bindConfirm.category
+	local categoryName = GetCategory(itemID)
+
+	-- ensure we're deleting an item from the correct category
+	if (itemID ~= id or category ~= categoryName) then return end
+
+	if (category == L:G(addon.S_BOE) or category == L:G(addon.S_WOE)) then
+		Categories:RemoveItemFromCategory(itemID)
+		addon.bindConfirm = nil -- Clear the bind confirm
+	end
 end
 
 -- Use this API to register a function that will be called for every item in the player's bags.

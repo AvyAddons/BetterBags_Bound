@@ -47,6 +47,8 @@ addon.S_WOE = "WoE"
 -- Addon Core
 addon.eventFrame = CreateFrame("Frame", addonName .. "EventFrame", UIParent)
 addon.eventFrame:RegisterEvent("ADDON_LOADED")
+addon.eventFrame:RegisterEvent("EQUIP_BIND_CONFIRM")
+addon.eventFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
 addon.eventFrame:SetScript("OnEvent", function(_, event, ...)
 	if event == "ADDON_LOADED" then
 		local name = ...
@@ -64,7 +66,20 @@ addon.eventFrame:SetScript("OnEvent", function(_, event, ...)
 			if (addon.db.wipeOnLoad) then
 				Categories:WipeCategory(L:G(addon.S_BOA))
 				Categories:WipeCategory(L:G(addon.S_BOE))
+				Categories:WipeCategory(L:G(addon.S_WOE))
 			end
+		end
+	elseif event == "EQUIP_BIND_CONFIRM" then
+		local _, itemLocation = ...
+		local bag, slot = itemLocation:GetBagAndSlot()
+		local id = C_Item.GetItemID(itemLocation)
+		local category = addon:GetItemCategory(bag, slot, nil)
+		addon.bindConfirm = { id = id, category = category }
+	elseif event == "PLAYER_EQUIPMENT_CHANGED" then
+		local slot, hasCurrent = ...
+		-- hasCurrent is false if the slot was just equipped
+		if (slot ~= nil and not hasCurrent) then
+			addon:RemoveBindConfirmFromCategory(slot)
 		end
 	end
 end)
