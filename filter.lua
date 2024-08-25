@@ -158,7 +158,7 @@ function addon:CategoryEnabled(category)
 end
 
 ---@param data ItemData
-local function CategoryFilter(data)
+function addon:CategoryFilter(data)
 	local quality = data.itemInfo.itemQuality
 	local bindType = data.itemInfo.bindType
 	local equippable = C_Item_IsEquippableItem(data.itemInfo.itemID)
@@ -204,11 +204,39 @@ function addon:RemoveBindConfirmFromCategory(slot)
 	end
 end
 
--- Use this API to register a function that will be called for every item in the player's bags.
--- The function you provide will be given an ItemData table, which contains all properties of an item
--- loaded from the Blizzard API. From here, you can call any custom code you want to analyze the item.
--- Your function must return a string, which is the category name that the item should be placed in.
--- If your function returns nil, the item will not be placed in any category.
--- Results of this function, including nil, are cached, so you do not need to worry about performance
--- after the first scan.
-Categories:RegisterCategoryFunction("BoEBoAItemsCategoryFilter", CategoryFilter)
+-- Check if the priority addon is available
+local BetterBagsPriority = LibStub('AceAddon-3.0'):GetAddon("BetterBags_Priority", true)
+local priorityEnabled = BetterBagsPriority ~= nil or false
+
+if (priorityEnabled) then
+	local PriorityCategories = BetterBagsPriority:GetModule('Categories')
+	-- this is required because we have multiple categories and can't really register a single function for all of them
+	local cat = Categories:GetCategoryByName(L:G("Bound"))
+	if not cat then
+		Categories:CreateCategory({
+			name = L:G("Bound"),
+			itemList = {},
+		})
+	end
+
+	-- If the priority addon is available, we register the custom category as an empty filter with BetterBags to keep the
+	-- "enable system" working. The actual filtering will be done by the priority addon
+	Categories:RegisterCategoryFunction("BoEBoAItemsCategoryFilter", function(data)
+		return nil
+	end)
+
+	-- categoriesWithPriority:RegisterCategoryFunction("YOUR_ADDON_TITLE", "YOUR_FILTER_NAME_HERE", fn)
+	PriorityCategories:RegisterCategoryFunction(L:G("Bound"), "BoEBoAItemsCategoryFilter", function(data)
+		return addon:CategoryFilter(data)
+	end)
+else
+	-- Use this API to register a function that will be called for every item in the player's bags.
+	-- The function you provide will be given an ItemData table, which contains all properties of an item
+	-- loaded from the Blizzard API. From here, you can call any custom code you want to analyze the item.
+	-- Your function must return a string, which is the category name that the item should be placed in.
+	-- If your function returns nil, the item will not be placed in any category.
+	-- Results of this function, including nil, are cached, so you do not need to worry about performance
+	-- after the first scan.
+	-- Your current code goes here to maintain the current behaviour if the priority addon isn't enabled
+	Categories:RegisterCategoryFunction("BoEBoAItemsCategoryFilter", addon.CategoryFilter)
+end

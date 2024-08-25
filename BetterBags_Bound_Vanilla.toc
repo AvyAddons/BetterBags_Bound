@@ -10,8 +10,9 @@
 
 ## DefaultState: Enabled
 ## Dependencies: BetterBags
+## OptionalDeps: BetterBags_Priority
 #@alpha@
-## OptionalDeps: BugSack, BugGrabber
+## OptionalDeps: BetterBags_Priority, BugSack, BugGrabber
 #@end-alpha@
 
 ## X-Date: @project-date-iso@
