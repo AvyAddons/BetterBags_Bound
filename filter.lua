@@ -238,5 +238,7 @@ else
 	-- Results of this function, including nil, are cached, so you do not need to worry about performance
 	-- after the first scan.
 	-- Your current code goes here to maintain the current behaviour if the priority addon isn't enabled
-	Categories:RegisterCategoryFunction("BoEBoAItemsCategoryFilter", addon.CategoryFilter)
+	Categories:RegisterCategoryFunction("BoEBoAItemsCategoryFilter", function(data)
+		return addon:CategoryFilter(data)
+	end)
 end
