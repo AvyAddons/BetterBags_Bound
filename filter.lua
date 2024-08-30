@@ -7,12 +7,16 @@ local addon = select(2, ...)
 local BetterBags = LibStub('AceAddon-3.0'):GetAddon("BetterBags")
 
 ---@class Categories: AceModule
+---@field GetCategoryByName fun(self: Categories, name: string): CustomCategoryFilter|nil
+---@field RemoveItemFromCategory fun(self: Categories, itemID: number): nil
+---@field RegisterCategoryFunction fun(self: Categories, name: string, fn: fun(data: ItemData): string|nil): nil
 local Categories = BetterBags:GetModule('Categories')
 
 ---@class Events: AceModule
 local Events = BetterBags:GetModule('Events')
 
 ---@class Database: AceModule
+---@field GetItemCategoryByItemID fun(self: Database, itemID: number): CustomCategoryFilter|nil
 local Database = BetterBags:GetModule('Database')
 
 -- Use the L:G() function to get the localized string.
@@ -21,7 +25,6 @@ local L = BetterBags:GetModule('Localization')
 
 -- Lua API
 -----------------------------------------------------------
-local _G = _G
 local string_find = string.find
 
 ---@param inputString string
@@ -209,6 +212,8 @@ local BetterBagsPriority = LibStub('AceAddon-3.0'):GetAddon("BetterBags_Priority
 local priorityEnabled = BetterBagsPriority ~= nil or false
 
 if (priorityEnabled) then
+	---@class PriorityCategories: AceModule
+	---@field RegisterCategoryFunction fun(self: PriorityCategories, name: string, filterName: string, fn: fun(data: ItemData): string|nil): nil
 	local PriorityCategories = BetterBagsPriority:GetModule('Categories')
 	-- this is required because we have multiple categories and can't really register a single function for all of them
 	local cat = Categories:GetCategoryByName(L:G("Bound"))

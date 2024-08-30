@@ -7,15 +7,20 @@ local addon = select(2, ...)
 local BetterBags = LibStub('AceAddon-3.0'):GetAddon("BetterBags")
 
 ---@class Categories: AceModule
+---@field CreateCategory fun(self: Categories, category: CustomCategoryFilter): nil
+---@field DeleteCategory fun(self: Categories, name: string): nil
+---@field WipeCategory fun(self: Categories, name: string): nil
 local Categories = BetterBags:GetModule('Categories')
 
 ---@class Localization: AceModule
 local L = BetterBags:GetModule('Localization')
 
 ---@class Config: AceModule
+---@field AddPluginConfig fun(self: Config, name: string, options: AceConfig.OptionsTable): nil
 local Config = BetterBags:GetModule('Config')
 
 ---@class Events: AceModule
+---@field SendMessage fun(self: Events, message: string, ...: any): nil
 local Events = BetterBags:GetModule('Events')
 
 ---@class Items: AceModule
