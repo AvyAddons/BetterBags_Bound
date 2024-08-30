@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ## [Unreleased]
 ### Fixed
 - Changing a configuration option now properly refreshes the item categories.
+- The "Only Equippable" configuration is no longer always active and can be disabled normally.
 
 ## [1.5.1] 2024-08-26
 ### Fixed
