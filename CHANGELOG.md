@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file. Be aware th
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+- Added a "Soulbound" category. It is disabled by default.
+
 ### Fixed
 - Changing a configuration option now properly refreshes the item categories.
 - The "Only Equippable" configuration is no longer always active and can be disabled normally.

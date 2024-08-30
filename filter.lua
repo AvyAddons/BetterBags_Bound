@@ -65,6 +65,7 @@ local IsRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 -----------------------------------------------------------
 -- Filter Setup
 -----------------------------------------------------------
+local BOP_STRINGS = { ITEM_SOULBOUND, ITEM_BIND_ON_PICKUP }
 local BOA_STRINGS = { ITEM_ACCOUNTBOUND, ITEM_BNETACCOUNTBOUND, ITEM_BIND_TO_ACCOUNT, ITEM_BIND_TO_BNETACCOUNT }
 local WOE_STRINGS = { ITEM_ACCOUNTBOUND_UNTIL_EQUIP, ITEM_BIND_TO_ACCOUNT_UNTIL_EQUIP }
 
@@ -127,6 +128,8 @@ function addon:GetBindString(msg)
 	if (msg) then
 		if (string_find(msg, ITEM_BIND_ON_EQUIP)) then
 			return addon.S_BOE
+		elseif (string_findm(msg, BOP_STRINGS)) then
+			return addon.S_BOP
 		elseif (string_findm(msg, WOE_STRINGS)) then
 			return addon.S_WOE
 		elseif (string_findm(msg, BOA_STRINGS)) then
@@ -156,6 +159,8 @@ function addon:CategoryEnabled(category)
 		return addon.db.enableBoe
 	elseif (category == addon.S_WOE) then
 		return addon.db.enableWoe
+	elseif (category == addon.S_BOP) then
+		return addon.db.enableBop
 	end
 	return false
 end

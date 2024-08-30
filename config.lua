@@ -100,6 +100,28 @@ local options = {
 					end
 				end,
 			},
+			enableBop = {
+				type= "toggle",
+				order = 3,
+				name = L:G("Category: Soulbound"),
+				desc = L:G("If enabled, will categorize BoP items."),
+				get = function()
+					return addon.db.enableBop
+				end,
+				set = function(_, value)
+					addon.db.enableBop = value
+					if (addon.db.enableBop) then
+						Categories:CreateCategory({
+							name = L:G(addon.S_BOP),
+							itemList = {},
+							save = true,
+						})
+						Categories:ReprocessAllItems()
+					else
+						Categories:DeleteCategory(L:G(addon.S_BOP))
+					end
+				end,
+			},
 			onlyEquippable = {
 				type = "toggle",
 				width = "full",
