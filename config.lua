@@ -10,6 +10,7 @@ local BetterBags = LibStub('AceAddon-3.0'):GetAddon("BetterBags")
 ---@field CreateCategory fun(self: Categories, category: CustomCategoryFilter): nil
 ---@field DeleteCategory fun(self: Categories, name: string): nil
 ---@field WipeCategory fun(self: Categories, name: string): nil
+---@field ReprocessAllItems fun(self: Categories): nil
 local Categories = BetterBags:GetModule('Categories')
 
 ---@class Localization: AceModule
@@ -44,13 +45,15 @@ local options = {
 				set = function(_, value)
 					addon.db.enableBoe = value
 					if (addon.db.enableBoe) then
-						Categories:CreateCategory(L:G(addon.S_BOE))
-						Categories:WipeCategory(L:G(addon.S_BOE))
+						Categories:CreateCategory({
+							name = L:G(addon.S_BOE),
+							itemList = {},
+							save = false,
+						})
+						Categories:ReprocessAllItems()
 					else
-						Categories:WipeCategory(L:G(addon.S_BOE))
 						Categories:DeleteCategory(L:G(addon.S_BOE))
 					end
-					Events:SendMessage('bags/FullRefreshAll')
 				end,
 			},
 			enableWoe = {
@@ -64,13 +67,15 @@ local options = {
 				set = function(_, value)
 					addon.db.enableWoe = value
 					if (addon.db.enableWoe) then
-						Categories:CreateCategory(L:G(addon.S_WOE))
-						Categories:WipeCategory(L:G(addon.S_WOE))
+						Categories:CreateCategory({
+							name = L:G(addon.S_WOE),
+							itemList = {},
+							save = false,
+						})
+						Categories:ReprocessAllItems()
 					else
-						Categories:WipeCategory(L:G(addon.S_WOE))
 						Categories:DeleteCategory(L:G(addon.S_WOE))
 					end
-					Events:SendMessage('bags/FullRefreshAll')
 				end,
 			},
 			enableBoa = {
@@ -84,34 +89,42 @@ local options = {
 				set = function(_, value)
 					addon.db.enableBoa = value
 					if (addon.db.enableBoa) then
-						Categories:CreateCategory(L:G(addon.S_BOA))
-						Categories:WipeCategory(L:G(addon.S_BOA))
+						Categories:CreateCategory({
+							name = L:G(addon.S_BOA),
+							itemList = {},
+							save = false,
+						})
+						Categories:ReprocessAllItems()
 					else
-						Categories:WipeCategory(L:G(addon.S_BOA))
 						Categories:DeleteCategory(L:G(addon.S_BOA))
 					end
-					Events:SendMessage('bags/FullRefreshAll')
 				end,
 			},
 			onlyEquippable = {
 				type = "toggle",
 				width = "full",
-				order = 3,
+				order = 10,
 				name = L:G("Only Equippable"),
-				desc = L:G("Only categorize equippable items. This prevents a multitude of items from being lumped into \"Warbound\". Requires a reload."),
+				desc = L:G("Only categorize equippable items. This prevents a multitude of items from being lumped into \"Warbound\"."),
 				get = function()
 					return addon.db.onlyEquippable
 				end,
 				set = function(_, value)
 					addon.db.onlyEquippable = value
+					if (addon.db.onlyEquippable) then
+						Categories:WipeCategory(L:G(addon.S_BOA))
+						Categories:WipeCategory(L:G(addon.S_BOE))
+						Categories:WipeCategory(L:G(addon.S_WOE))
+						Categories:ReprocessAllItems()
+					end
 				end,
 			},
 			wipeOnLoad = {
 				type = "toggle",
 				width = "full",
-				order = 4,
+				order = 20,
 				name = L:G("Wipe Categories"),
-				desc = L:G("Wipe categories on load. This prevent equipped items from being categorized as Bound still. Requires a reload."),
+				desc = L:G("Wipe categories on load. This prevent equipped items from being categorized as Bound still. Only affects the next reload/login."),
 				get = function()
 					return addon.db.wipeOnLoad
 				end,
