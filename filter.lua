@@ -10,6 +10,8 @@ local BetterBags = LibStub('AceAddon-3.0'):GetAddon("BetterBags")
 ---@field GetCategoryByName fun(self: Categories, name: string): CustomCategoryFilter|nil
 ---@field RemoveItemFromCategory fun(self: Categories, itemID: number): nil
 ---@field RegisterCategoryFunction fun(self: Categories, name: string, fn: fun(data: ItemData): string|nil): nil
+---@field ephemeralCategories table<string, CustomCategoryFilter> -- private
+---@field ephemeralCategoryByItemID table<number, CustomCategoryFilter>
 local Categories = BetterBags:GetModule('Categories')
 
 ---@class Events: AceModule
@@ -224,7 +226,7 @@ if (priorityEnabled) then
 	-- this is required because we have multiple categories and can't really register a single function for all of them
 	local cat = Categories:GetCategoryByName(L:G("Bound"))
 	if not cat then
-		Categories:CreateCategory({
+		Categories:CreateCategory(addon.ctx:Copy(), {
 			name = L:G("Bound"),
 			itemList = {},
 		})

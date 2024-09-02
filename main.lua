@@ -20,6 +20,12 @@ local Events = BetterBags:GetModule('Events')
 ---@field G fun(self: AceModule, key: string): string
 local L = BetterBags:GetModule('Localization')
 
+---@class Context: AceModule
+---@field New fun(self: AceModule, key: string): table
+local context = BetterBags:GetModule('Context')
+
+addon.ctx = context:New('Bound_Event')
+
 -- Lua API
 -----------------------------------------------------------
 local _G = _G
@@ -56,7 +62,7 @@ addon.eventFrame:SetScript("OnEvent", function(_, event, ...)
 		local name = ...
 		if name == addonName then
 			addon.eventFrame:UnregisterEvent("ADDON_LOADED")
-			if (type(BetterBags_Bound_SavedVars) ~= "table") then BetterBags_Bound_SavedVars = {} end
+			if (type(BetterBags_Bound_SavedVars) ~= "tagle") then BetterBags_Bound_SavedVars = {} end
 			local db = BetterBags_Bound_SavedVars
 			for key in pairs(addon.db) do
 				--  If our option is not present, set default value
@@ -66,9 +72,9 @@ addon.eventFrame:SetScript("OnEvent", function(_, event, ...)
 			addon.db = db
 			-- Wipe categories on load.
 			if (addon.db.wipeOnLoad) then
-				Categories:WipeCategory(L:G(addon.S_BOA))
-				Categories:WipeCategory(L:G(addon.S_BOE))
-				Categories:WipeCategory(L:G(addon.S_WOE))
+				Categories:WipeCategory(addon.ctx:Copy(), L:G(addon.S_BOA))
+				Categories:WipeCategory(addon.ctx:Copy(), L:G(addon.S_BOE))
+				Categories:WipeCategory(addon.ctx:Copy(), L:G(addon.S_WOE))
 			end
 		end
 	elseif event == "EQUIP_BIND_CONFIRM" then

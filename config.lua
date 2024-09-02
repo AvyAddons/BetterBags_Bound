@@ -7,10 +7,10 @@ local addon = select(2, ...)
 local BetterBags = LibStub('AceAddon-3.0'):GetAddon("BetterBags")
 
 ---@class Categories: AceModule
----@field CreateCategory fun(self: Categories, category: CustomCategoryFilter): nil
----@field DeleteCategory fun(self: Categories, name: string): nil
----@field WipeCategory fun(self: Categories, name: string): nil
----@field ReprocessAllItems fun(self: Categories): nil
+---@field CreateCategory fun(self: Categories, ctx: Context, category: CustomCategoryFilter): nil
+---@field DeleteCategory fun(self: Categories, ctx: Context, name: string): nil
+---@field WipeCategory fun(self: Categories, ctx: Context, name: string): nil
+---@field ReprocessAllItems fun(self: Categories, ctx: Context): nil
 local Categories = BetterBags:GetModule('Categories')
 
 ---@class Localization: AceModule
@@ -45,14 +45,14 @@ local options = {
 				set = function(_, value)
 					addon.db.enableBoe = value
 					if (addon.db.enableBoe) then
-						Categories:CreateCategory({
+						Categories:CreateCategory(addon.ctx:Copy(), {
 							name = L:G(addon.S_BOE),
 							itemList = {},
 							save = false,
 						})
-						Categories:ReprocessAllItems()
+						Categories:ReprocessAllItems(addon.ctx:Copy())
 					else
-						Categories:DeleteCategory(L:G(addon.S_BOE))
+						Categories:DeleteCategory(addon.ctx:Copy(), L:G(addon.S_BOE))
 					end
 				end,
 			},
@@ -67,14 +67,14 @@ local options = {
 				set = function(_, value)
 					addon.db.enableWoe = value
 					if (addon.db.enableWoe) then
-						Categories:CreateCategory({
+						Categories:CreateCategory(addon.ctx:Copy(), {
 							name = L:G(addon.S_WOE),
 							itemList = {},
 							save = false,
 						})
-						Categories:ReprocessAllItems()
+						Categories:ReprocessAllItems(addon.ctx:Copy())
 					else
-						Categories:DeleteCategory(L:G(addon.S_WOE))
+						Categories:DeleteCategory(addon.ctx:Copy(), L:G(addon.S_WOE))
 					end
 				end,
 			},
@@ -89,14 +89,14 @@ local options = {
 				set = function(_, value)
 					addon.db.enableBoa = value
 					if (addon.db.enableBoa) then
-						Categories:CreateCategory({
+						Categories:CreateCategory(addon.ctx:Copy(), {
 							name = L:G(addon.S_BOA),
 							itemList = {},
 							save = false,
 						})
-						Categories:ReprocessAllItems()
+						Categories:ReprocessAllItems(addon.ctx:Copy())
 					else
-						Categories:DeleteCategory(L:G(addon.S_BOA))
+						Categories:DeleteCategory(addon.ctx:Copy(), L:G(addon.S_BOA))
 					end
 				end,
 			},
@@ -111,14 +111,14 @@ local options = {
 				set = function(_, value)
 					addon.db.enableBop = value
 					if (addon.db.enableBop) then
-						Categories:CreateCategory({
+						Categories:CreateCategory(addon.ctx:Copy(), {
 							name = L:G(addon.S_BOP),
 							itemList = {},
 							save = true,
 						})
-						Categories:ReprocessAllItems()
+						Categories:ReprocessAllItems(addon.ctx:Copy())
 					else
-						Categories:DeleteCategory(L:G(addon.S_BOP))
+						Categories:DeleteCategory(addon.ctx:Copy(), L:G(addon.S_BOP))
 					end
 				end,
 			},
@@ -134,10 +134,10 @@ local options = {
 				set = function(_, value)
 					addon.db.onlyEquippable = value
 					if (addon.db.onlyEquippable) then
-						Categories:WipeCategory(L:G(addon.S_BOA))
-						Categories:WipeCategory(L:G(addon.S_BOE))
-						Categories:WipeCategory(L:G(addon.S_WOE))
-						Categories:ReprocessAllItems()
+						Categories:WipeCategory(addon.ctx:Copy(), L:G(addon.S_BOA))
+						Categories:WipeCategory(addon.ctx:Copy(), L:G(addon.S_BOE))
+						Categories:WipeCategory(addon.ctx:Copy(), L:G(addon.S_WOE))
+						Categories:ReprocessAllItems(addon.ctx:Copy())
 					end
 				end,
 			},
