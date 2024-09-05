@@ -62,7 +62,7 @@ addon.eventFrame:SetScript("OnEvent", function(_, event, ...)
 		local name = ...
 		if name == addonName then
 			addon.eventFrame:UnregisterEvent("ADDON_LOADED")
-			if (type(BetterBags_Bound_SavedVars) ~= "tagle") then BetterBags_Bound_SavedVars = {} end
+			if (type(BetterBags_Bound_SavedVars) ~= "table") then BetterBags_Bound_SavedVars = {} end
 			local db = BetterBags_Bound_SavedVars
 			for key in pairs(addon.db) do
 				--  If our option is not present, set default value
