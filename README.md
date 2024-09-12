@@ -1,5 +1,5 @@
-# BetterBags - BoE, WoE & BoA
-> Filters for BoE, WoE & BoA items in [BetterBags](https://github.com/Cidan/BetterBags).
+# BetterBags - BoE, WuE & BoA
+> Filters for BoE, WuE & BoA items in [BetterBags](https://github.com/Cidan/BetterBags).
 
 This plugin also supports "Soulbound" items, but they are disabled by default. Head over to the *Plugin Options* section and look for **Bound**.
 

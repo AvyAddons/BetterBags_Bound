@@ -1,7 +1,7 @@
 ## Interface: 110000, 110002
 
-## Title: BetterBags - BoE, WoE & BoA
-## Notes: Adds BoE, WoE & BoA filters to BetterBags.
+## Title: BetterBags - BoE, WuE & BoA
+## Notes: Adds BoE, WuE & BoA filters to BetterBags.
 ## Author: Avyiel
 ## Version: @project-version@
 ## X-Date: @project-date-iso@

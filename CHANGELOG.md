@@ -1,7 +1,11 @@
-# BetterBags - BoE, WoE & BoA Changelog
+# BetterBags - BoE, WuE & BoA Changelog
 All notable changes to this project will be documented in this file. Be aware that the [Unreleased] features are not yet available in the official tagged builds.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
+
+## [Unreleased]
+### Changed
+- Renamed "WoE" to "WuE" to match the rest of the community.
 
 ## [1.7.1] 2024-09-05
 ### Fixed
@@ -33,11 +37,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [1.4.0] 2024-08-16
 ### Added
-- The plugin now clears items from the BoE/WoE categories when equipping them. For now, this works only in Retail.
+- The plugin now clears items from the BoE/WuE categories when equipping them. For now, this works only in Retail.
 
 ## [1.3.0] 2024-08-12
 ### Added
-- Support for Warbound until Equipped (WoE)
+- Support for Warbound until Equipped (WuE)
 - Plugin settings panel is now available
 
 ### Removed

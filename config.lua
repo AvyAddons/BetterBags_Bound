@@ -56,25 +56,25 @@ local options = {
 					end
 				end,
 			},
-			enableWoe = {
+			enableWue = {
 				type = "toggle",
 				order = 1,
-				name = L:G("Category: WoE"),
-				desc = L:G("If enabled, will categorize WoE items."),
+				name = L:G("Category: WuE"),
+				desc = L:G("If enabled, will categorize WuE items."),
 				get = function()
-					return addon.db.enableWoe
+					return addon.db.enableWue
 				end,
 				set = function(_, value)
-					addon.db.enableWoe = value
-					if (addon.db.enableWoe) then
+					addon.db.enableWue = value
+					if (addon.db.enableWue) then
 						Categories:CreateCategory(addon.ctx:Copy(), {
-							name = L:G(addon.S_WOE),
+							name = L:G(addon.S_WUE),
 							itemList = {},
 							save = false,
 						})
 						Categories:ReprocessAllItems(addon.ctx:Copy())
 					else
-						Categories:DeleteCategory(addon.ctx:Copy(), L:G(addon.S_WOE))
+						Categories:DeleteCategory(addon.ctx:Copy(), L:G(addon.S_WUE))
 					end
 				end,
 			},
@@ -136,7 +136,7 @@ local options = {
 					if (addon.db.onlyEquippable) then
 						Categories:WipeCategory(addon.ctx:Copy(), L:G(addon.S_BOA))
 						Categories:WipeCategory(addon.ctx:Copy(), L:G(addon.S_BOE))
-						Categories:WipeCategory(addon.ctx:Copy(), L:G(addon.S_WOE))
+						Categories:WipeCategory(addon.ctx:Copy(), L:G(addon.S_WUE))
 						Categories:ReprocessAllItems(addon.ctx:Copy())
 					end
 				end,

@@ -69,7 +69,7 @@ local IsRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 -----------------------------------------------------------
 local BOP_STRINGS = { ITEM_SOULBOUND, ITEM_BIND_ON_PICKUP }
 local BOA_STRINGS = { ITEM_ACCOUNTBOUND, ITEM_BNETACCOUNTBOUND, ITEM_BIND_TO_ACCOUNT, ITEM_BIND_TO_BNETACCOUNT }
-local WOE_STRINGS = { ITEM_ACCOUNTBOUND_UNTIL_EQUIP, ITEM_BIND_TO_ACCOUNT_UNTIL_EQUIP }
+local WUE_STRINGS = { ITEM_ACCOUNTBOUND_UNTIL_EQUIP, ITEM_BIND_TO_ACCOUNT_UNTIL_EQUIP }
 
 -- Tooltip used for scanning.
 local _SCANNER = "AVY_ScannerTooltip"
@@ -132,8 +132,8 @@ function addon:GetBindString(msg)
 			return addon.S_BOE
 		elseif (string_findm(msg, BOP_STRINGS)) then
 			return addon.S_BOP
-		elseif (string_findm(msg, WOE_STRINGS)) then
-			return addon.S_WOE
+		elseif (string_findm(msg, WUE_STRINGS)) then
+			return addon.S_WUE
 		elseif (string_findm(msg, BOA_STRINGS)) then
 			return addon.S_BOA
 		end
@@ -159,8 +159,8 @@ function addon:CategoryEnabled(category)
 		return addon.db.enableBoa
 	elseif (category == addon.S_BOE) then
 		return addon.db.enableBoe
-	elseif (category == addon.S_WOE) then
-		return addon.db.enableWoe
+	elseif (category == addon.S_WUE) then
+		return addon.db.enableWue
 	elseif (category == addon.S_BOP) then
 		return addon.db.enableBop
 	end
@@ -209,7 +209,7 @@ function addon:RemoveBindConfirmFromCategory(slot)
 	-- ensure we're deleting an item from the correct category
 	if (itemID ~= id or category ~= categoryName) then return end
 
-	if (category == L:G(addon.S_BOE) or category == L:G(addon.S_WOE)) then
+	if (category == L:G(addon.S_BOE) or category == L:G(addon.S_WUE)) then
 		Categories:RemoveItemFromCategory(itemID)
 		addon.bindConfirm = nil -- Clear the bind confirm
 	end

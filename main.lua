@@ -38,7 +38,7 @@ local CreateFrame = _G.CreateFrame
 -----------------------------------------------------------
 addon.db = {
 	enableBop = false,
-	enableWoe = true,
+	enableWue = true,
 	enableBoe = true,
 	enableBoa = true,
 	onlyEquippable = true,
@@ -49,7 +49,7 @@ addon.db = {
 -----------------------------------------------------------
 addon.S_BOA = "BoA"
 addon.S_BOE = "BoE"
-addon.S_WOE = "WoE"
+addon.S_WUE = "WuE"
 addon.S_BOP = "Soulbound"
 
 -- Addon Core
@@ -67,6 +67,11 @@ addon.eventFrame:SetScript("OnEvent", function(_, event, ...)
 			for key in pairs(addon.db) do
 				--  If our option is not present, set default value
 				if (db[key] == nil) then db[key] = addon.db[key] end
+				-- Migrate DB for backwards compatibility
+				if (db.enableWoe ~= nil) then
+					db.enableWue = db.enableWoe
+					db.enableWoe = nil
+				end
 			end
 			-- Update our reference so that changed options are saved on logout
 			addon.db = db
@@ -74,7 +79,7 @@ addon.eventFrame:SetScript("OnEvent", function(_, event, ...)
 			if (addon.db.wipeOnLoad) then
 				Categories:WipeCategory(addon.ctx:Copy(), L:G(addon.S_BOA))
 				Categories:WipeCategory(addon.ctx:Copy(), L:G(addon.S_BOE))
-				Categories:WipeCategory(addon.ctx:Copy(), L:G(addon.S_WOE))
+				Categories:WipeCategory(addon.ctx:Copy(), L:G(addon.S_WUE))
 			end
 		end
 	elseif event == "EQUIP_BIND_CONFIRM" then
