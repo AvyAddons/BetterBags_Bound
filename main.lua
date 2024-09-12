@@ -3,6 +3,10 @@ local addonName = ...
 ---@class ns
 local addon = select(2, ...)
 
+--@debug@
+_G["BBBound"] = addon
+--@end-debug@
+
 -- BetterBags namespace
 -----------------------------------------------------------
 ---@class BetterBags: AceAddon
@@ -23,6 +27,10 @@ local L = BetterBags:GetModule('Localization')
 ---@class Context: AceModule
 ---@field New fun(self: AceModule, key: string): table
 local context = BetterBags:GetModule('Context')
+
+---@class Config: AceModule
+---@field AddPluginConfig fun(self: Config, name: string, options: AceConfig.OptionsTable): nil
+local Config = BetterBags:GetModule('Config')
 
 addon.ctx = context:New('Bound_Event')
 
@@ -81,6 +89,9 @@ addon.eventFrame:SetScript("OnEvent", function(_, event, ...)
 				Categories:WipeCategory(addon.ctx:Copy(), L:G(addon.S_BOE))
 				Categories:WipeCategory(addon.ctx:Copy(), L:G(addon.S_WUE))
 			end
+
+			-- Load config only after populating the DB, since BetterBags will cache the get function
+			Config:AddPluginConfig(L:G("Bound"), addon.options)
 		end
 	elseif event == "EQUIP_BIND_CONFIRM" then
 		local _, itemLocation = ...

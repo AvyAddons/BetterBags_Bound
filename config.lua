@@ -16,10 +16,6 @@ local Categories = BetterBags:GetModule('Categories')
 ---@class Localization: AceModule
 local L = BetterBags:GetModule('Localization')
 
----@class Config: AceModule
----@field AddPluginConfig fun(self: Config, name: string, options: AceConfig.OptionsTable): nil
-local Config = BetterBags:GetModule('Config')
-
 ---@class Events: AceModule
 ---@field SendMessage fun(self: Events, message: string, ...: any): nil
 local Events = BetterBags:GetModule('Events')
@@ -27,7 +23,7 @@ local Events = BetterBags:GetModule('Events')
 ---@class Items: AceModule
 local Items = BetterBags:GetModule('Items')
 
-local options = {
+addon.options = {
 	boundOptions = {
 		type = "group",
 		name = L:G("BoE & BoA"),
@@ -157,5 +153,3 @@ local options = {
 		}
 	}
 }
-
-Config:AddPluginConfig(L:G("Bound"), options)
