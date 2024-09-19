@@ -85,7 +85,7 @@ function addon:GetItemCategory(bagIndex, slotIndex, itemInfo)
 	if (IsRetail) then
 		local tooltipInfo = C_TooltipInfo_GetBagItem(bagIndex, slotIndex)
 		if not tooltipInfo then return end
-		for i = 2, 4 do
+		for i = 2, 6 do
 			local line = tooltipInfo.lines[i]
 			if (not line) then
 				break
