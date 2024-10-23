@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file. Be aware th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+## Changed
+- Bump Retail TOC to 11.0.2, 11.0.5
+
 ## [1.8.1] 2024-09-19
 ### Fixed
 - Increased scanning range to account for BoE with upgrade levels.
