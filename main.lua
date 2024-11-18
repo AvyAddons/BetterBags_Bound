@@ -33,6 +33,7 @@ local context = BetterBags:GetModule('Context')
 local Config = BetterBags:GetModule('Config')
 
 addon.ctx = context:New('Bound_Event')
+addon.context = context
 
 -- Lua API
 -----------------------------------------------------------
@@ -85,9 +86,9 @@ addon.eventFrame:SetScript("OnEvent", function(_, event, ...)
 			addon.db = db
 			-- Wipe categories on load.
 			if (addon.db.wipeOnLoad) then
-				Categories:WipeCategory(addon.ctx:Copy(), L:G(addon.S_BOA))
-				Categories:WipeCategory(addon.ctx:Copy(), L:G(addon.S_BOE))
-				Categories:WipeCategory(addon.ctx:Copy(), L:G(addon.S_WUE))
+				Categories:WipeCategory(context:New('Bound_OnLoadWipe_' .. addon.S_BOA), L:G(addon.S_BOA))
+				Categories:WipeCategory(context:New('Bound_OnLoadWipe_' .. addon.S_BOE), L:G(addon.S_BOE))
+				Categories:WipeCategory(context:New('Bound_OnLoadWipe_' .. addon.S_WUE), L:G(addon.S_WUE))
 			end
 
 			-- Load config only after populating the DB, since BetterBags will cache the get function

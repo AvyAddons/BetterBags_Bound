@@ -226,7 +226,7 @@ if (priorityEnabled) then
 	-- this is required because we have multiple categories and can't really register a single function for all of them
 	local cat = Categories:GetCategoryByName(L:G("Bound"))
 	if not cat then
-		Categories:CreateCategory(addon.ctx:Copy(), {
+		Categories:CreateCategory(addon.context:New("Bound_Create_UmbrellaCat"), {
 			name = L:G("Bound"),
 			itemList = {},
 		})
