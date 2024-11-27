@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file. Be aware th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+## Changed
+- Bump Vanilla TOC to 1.15.5.
+
 ## [1.8.3] 2024-11-18
 ## Changed
 - Internal updates to context usage.
