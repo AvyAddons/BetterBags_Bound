@@ -61,9 +61,6 @@ local CreateFrame = CreateFrame
 local C_TooltipInfo_GetBagItem = C_TooltipInfo and C_TooltipInfo.GetBagItem
 local C_Item_IsEquippableItem = C_Item and C_Item.IsEquippableItem
 
---- Whether we have C_TooltipInfo APIs available
-local IsRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
-
 -----------------------------------------------------------
 -- Filter Setup
 -----------------------------------------------------------
@@ -82,7 +79,8 @@ local _SCANNER = "AVY_ScannerTooltip"
 function addon:GetItemCategory(bagIndex, slotIndex, itemInfo)
 	local category = nil
 
-	if (IsRetail) then
+	--- Whether we have C_TooltipInfo APIs available
+	if (addon.IsRetail) then
 		local tooltipInfo = C_TooltipInfo_GetBagItem(bagIndex, slotIndex)
 		if not tooltipInfo then return end
 		for i = 2, 6 do
@@ -198,7 +196,7 @@ end
 ---@param slot number
 function addon:RemoveBindConfirmFromCategory(slot)
 	if addon.bindConfirm == nil then return end
-	if not IsRetail then return end
+	if not addon.IsRetail then return end
 
 	local id = addon.bindConfirm.id
 	local itemID = C_Item.GetItemID({ equipmentSlotIndex = slot })

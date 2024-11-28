@@ -60,6 +60,7 @@ addon.S_BOA = "BoA"
 addon.S_BOE = "BoE"
 addon.S_WUE = "WuE"
 addon.S_BOP = "Soulbound"
+addon.IsRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 
 -- Addon Core
 addon.eventFrame = CreateFrame("Frame", addonName .. "EventFrame", UIParent)
@@ -95,12 +96,14 @@ addon.eventFrame:SetScript("OnEvent", function(_, event, ...)
 			Config:AddPluginConfig(L:G("Bound"), addon.options)
 		end
 	elseif event == "EQUIP_BIND_CONFIRM" then
+		if not addon.IsRetail then return end -- event is scuffed in Classic
 		local _, itemLocation = ...
 		local bag, slot = itemLocation:GetBagAndSlot()
 		local id = C_Item.GetItemID(itemLocation)
 		local category = addon:GetItemCategory(bag, slot, nil)
 		addon.bindConfirm = { id = id, category = category }
 	elseif event == "PLAYER_EQUIPMENT_CHANGED" then
+		if not addon.IsRetail then return end -- event is scuffed in Classic
 		local slot, hasCurrent = ...
 		-- hasCurrent is false if the slot was just equipped
 		if (slot ~= nil and not hasCurrent) then
