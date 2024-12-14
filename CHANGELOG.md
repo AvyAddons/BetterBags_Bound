@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file. Be aware th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+## Changed
+- Bump Cataclysm TOC to 4.4.1.
+
 ## [1.8.5] 2024-11-28
 ## Fixed
 - Prevent Lua error when equipping BoE items in Classic.
