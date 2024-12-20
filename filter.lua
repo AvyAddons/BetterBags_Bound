@@ -97,7 +97,7 @@ function addon:GetItemCategory(bagIndex, slotIndex, itemInfo)
 	else
 		if itemInfo == nil then return end
 		if (itemInfo.bindType == 2 or itemInfo.bindType == 3) then
-			local Scanner = CreateFrame("GameTooltip", _SCANNER .. itemInfo.itemGUID, nil, "GameTooltipTemplate")
+			local Scanner = CreateFrame("GameTooltip", _SCANNER .. itemInfo.itemGUID, nil, "SharedTooltipTemplate")
 			Scanner:SetOwner(WorldFrame, "ANCHOR_NONE")
 			Scanner:ClearLines()
 			if bagIndex == BANK_CONTAINER then
