@@ -3,9 +3,9 @@ All notable changes to this project will be documented in this file. Be aware th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [1.9.0]
 ## Changed
-- Internal update to scanning tooltip
+- Internal update to scanning tooltip. This should make scanning faster.
 
 ## [1.8.7] 2024-12-19
 ## Changed
