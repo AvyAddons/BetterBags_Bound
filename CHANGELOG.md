@@ -3,32 +3,36 @@ All notable changes to this project will be documented in this file. Be aware th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Changed
+- Updated internal interfaces to match base addon.
+
 ## [1.9.0]
-## Changed
+### Changed
 - Internal update to scanning tooltip. This should make scanning faster.
 
 ## [1.8.7] 2024-12-19
-## Changed
+### Changed
 - Bump Retail TOC to 11.0.5, 11.0.7
 
 ## [1.8.6] 2024-12-14
-## Changed
+### Changed
 - Bump Cataclysm TOC to 4.4.1.
 
 ## [1.8.5] 2024-11-28
-## Fixed
+### Fixed
 - Prevent Lua error when equipping BoE items in Classic.
 
 ## [1.8.4] 2024-11-27
-## Changed
+### Changed
 - Bump Vanilla TOC to 1.15.5.
 
 ## [1.8.3] 2024-11-18
-## Changed
+### Changed
 - Internal updates to context usage.
 
 ## [1.8.2] 2024-10-23
-## Changed
+### Changed
 - Bump Retail TOC to 11.0.2, 11.0.5
 
 ## [1.8.1] 2024-09-19
