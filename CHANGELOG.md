@@ -3,11 +3,11 @@ All notable changes to this project will be documented in this file. Be aware th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [1.9.1] 2025-02-06
 ### Changed
 - Updated internal interfaces to match base addon.
 
-## [1.9.0]
+## [1.9.0] 2025-01-09
 ### Changed
 - Internal update to scanning tooltip. This should make scanning faster.
 
