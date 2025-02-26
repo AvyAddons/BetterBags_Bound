@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file. Be aware th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Changed
+- Bump TOC to 11.1.0
+
 ## [1.9.1] 2025-02-06
 ### Changed
 - Updated internal interfaces to match base addon.
