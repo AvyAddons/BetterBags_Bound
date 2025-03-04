@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file. Be aware th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Changed
+- Bump Cata TOC to 4.4.2
+
 ## [1.10.1] 2025-03-04
 ### Changed
 - Bump Classic TOC to 1.15.6
