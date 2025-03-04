@@ -1,4 +1,4 @@
-## Interface: 11504, 11505
+## Interface: 11506
 
 ## Title: BetterBags - BoE & BoA
 ## Notes: Adds BoE & BoA filters to BetterBags.
