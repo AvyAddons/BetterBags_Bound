@@ -1,4 +1,4 @@
-## Interface: 110100
+## Interface: 110105
 
 ## Title: BetterBags - BoE, WuE & BoA
 ## Notes: Adds BoE, WuE & BoA filters to BetterBags.
