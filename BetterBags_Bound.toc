@@ -5,7 +5,6 @@
 ## Author: Avyiel
 ## Version: @project-version@
 ## IconTexture: Interface\Icons\inv_misc_bag_15
-## SavedVariables: BetterBags_Bound_SavedVars
 ## Category-enUS: Action Bars
 ## Category-deDE: Aktionsleisten
 ## Category-esES: Barras de acción
@@ -19,6 +18,9 @@
 ## Category-zhTW: 快捷列
 
 ## DefaultState: Enabled
+## SavedVariables: BetterBags_Bound_SavedVars
+## LoadSavedVariablesFirst: 1
+
 ## Dependencies: BetterBags
 ## OptionalDeps: BetterBags_Priority
 #@alpha@
