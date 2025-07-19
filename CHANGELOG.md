@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ## [Unreleased]
 ### Changed
 - Improved loading of saved variables.
+- Bump TOC to 11.1.7
 
 ## [1.10.4] 2025-06-29
 ### Changed

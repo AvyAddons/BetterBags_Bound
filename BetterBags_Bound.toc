@@ -1,4 +1,4 @@
-## Interface: 110105
+## Interface: 110107
 
 ## Title: BetterBags - BoE, WuE & BoA
 ## Notes: Adds BoE, WuE & BoA filters to BetterBags.
@@ -40,4 +40,5 @@ config.lua
 
 #@debug@
 ## Version: DEV
+## AllowAddOnTableAccess: true
 #@end-debug@
