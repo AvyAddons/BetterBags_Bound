@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file. Be aware th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [1.10.5] 2025-07-19
 ### Changed
 - Improved loading of saved variables.
 - Bump TOC to 11.1.7
