@@ -1,4 +1,4 @@
-## Interface: 40402
+## Interface: 50500
 
 ## Title: BetterBags - BoE & BoA
 ## Notes: Adds BoE & BoA filters to BetterBags.
@@ -7,6 +7,7 @@
 ## X-Date: @project-date-iso@
 ## IconTexture: Interface\Icons\inv_misc_bag_15
 ## SavedVariables: BetterBags_Bound_SavedVars
+## LoadSavedVariablesFirst: 1
 
 ## DefaultState: Enabled
 ## Dependencies: BetterBags
