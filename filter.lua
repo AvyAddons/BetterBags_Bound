@@ -128,12 +128,12 @@ function addon:GetBindString(msg)
 	if (msg) then
 		if (string_find(msg, ITEM_BIND_ON_EQUIP)) then
 			return addon.S_BOE
-		elseif (string_findm(msg, BOP_STRINGS)) then
-			return addon.S_BOP
 		elseif (string_findm(msg, WUE_STRINGS)) then
 			return addon.S_WUE
 		elseif (string_findm(msg, BOA_STRINGS)) then
 			return addon.S_BOA
+		elseif (string_findm(msg, BOP_STRINGS)) then
+			return addon.S_BOP
 		end
 	end
 end
