@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file. Be aware th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Improvements
+- Added this plugin to the BetterBags group
+
 ## [1.12.1] 2025-10-04
 ### Fixed
 - Improved WuE detection in Italian clients

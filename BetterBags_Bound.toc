@@ -5,6 +5,7 @@
 ## Author: Avyiel
 ## Version: @project-version@
 ## IconTexture: Interface\Icons\inv_misc_bag_15
+## Group: BetterBags
 ## Category-enUS: Action Bars
 ## Category-deDE: Aktionsleisten
 ## Category-esES: Barras de acción
