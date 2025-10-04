@@ -4,11 +4,25 @@
 ## Notes: Adds BoE & BoA filters to BetterBags.
 ## Author: Avyiel
 ## Version: @project-version@
-## X-Date: @project-date-iso@
 ## IconTexture: Interface\Icons\inv_misc_bag_15
-## SavedVariables: BetterBags_Bound_SavedVars
+
+## Group: BetterBags
+## Category: Inventory
+## Category-deDE: Inventar
+## Category-esES: Inventario
+## Category-esMX: Inventario
+## Category-frFR: Inventaire
+## Category-itIT: Inventario
+## Category-koKR: 소지품
+## Category-ptBR: Inventário
+## Category-ruRU: Инвентарь
+## Category-zhCN: 物品栏
+## Category-zhTW: 物品欄
 
 ## DefaultState: Enabled
+## SavedVariables: BetterBags_Bound_SavedVars
+## LoadSavedVariablesFirst: 1
+
 ## Dependencies: BetterBags
 ## OptionalDeps: BetterBags_Priority
 #@alpha@
