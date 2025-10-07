@@ -68,6 +68,7 @@ addon.isCata = WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC
 addon.isMists = WOW_PROJECT_ID == WOW_PROJECT_MISTS_CLASSIC
 
 -- Addon Core
+-----------------------------------------------------------
 addon.eventFrame = CreateFrame("Frame", addonName .. "EventFrame", UIParent)
 addon.eventFrame:RegisterEvent("ADDON_LOADED")
 addon.eventFrame:RegisterEvent("EQUIP_BIND_CONFIRM")

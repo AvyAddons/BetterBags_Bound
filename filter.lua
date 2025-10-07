@@ -31,28 +31,14 @@ local string_find = string.find
 
 ---@param inputString string
 ---@param patterns string[]
----@return string[]|nil
-local function string_findm(inputString, patterns)
-	local results = {}
-	local keys    = {}
-
-	for i = 1, #patterns do
-		local patternToMatch = patterns[i]
-		local start, endd = string_find(inputString, patternToMatch)
-		if start ~= nil then
-			results[patternToMatch] = { start, endd }
-			table.insert(keys, start)
-		end
-	end
-
-	if #keys == 0 then return nil end
-
-	table.sort(keys)
-	local finalArray = {}
-	for i = 1, #keys do
-		table.insert(finalArray, results[keys[i]])
-	end
-	return finalArray
+---@return boolean|nil
+local function str_matchm(inputString, patterns)
+    for i = 1, #patterns do
+        if string_find(inputString, patterns[i]) then
+            return true
+        end
+    end
+    return nil
 end
 
 -- WoW API
@@ -80,7 +66,7 @@ function addon:GetItemCategory(bagIndex, slotIndex, itemInfo)
 	local category = nil
 
 	--- Whether we have C_TooltipInfo APIs available
-	if (addon.IsRetail) then
+	if (self.IsRetail) then
 		local tooltipInfo = C_TooltipInfo_GetBagItem(bagIndex, slotIndex)
 		if not tooltipInfo then return end
 		for i = 2, 6 do
@@ -105,7 +91,7 @@ function addon:GetItemCategory(bagIndex, slotIndex, itemInfo)
 			else
 				Scanner:SetBagItem(bagIndex, slotIndex)
 			end
-			local lines = self:GetTooltipLines(Scanner)
+			local lines = self.GetTooltipLines(Scanner)
 			for _, line in ipairs(lines) do
 				if (line == '') then
 					break
@@ -127,19 +113,19 @@ end
 function addon:GetBindString(msg)
 	if (msg) then
 		if (string_find(msg, ITEM_BIND_ON_EQUIP)) then
-			return addon.S_BOE
-		elseif (string_findm(msg, WUE_STRINGS)) then
-			return addon.S_WUE
-		elseif (string_findm(msg, BOA_STRINGS)) then
-			return addon.S_BOA
-		elseif (string_findm(msg, BOP_STRINGS)) then
-			return addon.S_BOP
+			return self.S_BOE
+		elseif (str_matchm(msg, WUE_STRINGS)) then
+			return self.S_WUE
+		elseif (str_matchm(msg, BOA_STRINGS)) then
+			return self.S_BOA
+		elseif (str_matchm(msg, BOP_STRINGS)) then
+			return self.S_BOP
 		end
 	end
 end
 
 ---@param tooltip GameTooltip
-function addon:GetTooltipLines(tooltip)
+function addon.GetTooltipLines(tooltip)
 	local textLines = {}
 	local regions = { tooltip:GetRegions() }
 	for _, r in ipairs(regions) do
@@ -153,14 +139,14 @@ end
 ---@param category string|nil
 ---@return boolean
 function addon:CategoryEnabled(category)
-	if (category == addon.S_BOA) then
-		return addon.db.enableBoa
-	elseif (category == addon.S_BOE) then
-		return addon.db.enableBoe
-	elseif (category == addon.S_WUE) then
-		return addon.db.enableWue
-	elseif (category == addon.S_BOP) then
-		return addon.db.enableBop
+	if (category == self.S_BOA) then
+		return self.db.enableBoa
+	elseif (category == self.S_BOE) then
+		return self.db.enableBoe
+	elseif (category == self.S_WUE) then
+		return self.db.enableWue
+	elseif (category == self.S_BOP) then
+		return self.db.enableBop
 	end
 	return false
 end
@@ -170,13 +156,13 @@ function addon:CategoryFilter(data)
 	local quality = data.itemInfo.itemQuality
 	local bindType = data.itemInfo.bindType
 	local equippable = C_Item_IsEquippableItem(data.itemInfo.itemID)
-	if (addon.db.onlyEquippable and not equippable) then return nil end
+	if (self.db.onlyEquippable and not equippable) then return nil end
 
 	-- Only parse items that are Common (1) and above, and are of type BoP, BoE, BoU, BoA, BoW
 	local junk = quality ~= nil and quality == 0
 	if (not junk or (bindType ~= nil and bindType > 0 and (bindType < 4 or bindType > 6))) then
-		local category = addon:GetItemCategory(data.bagid, data.slotid, data.itemInfo)
-		if (category ~= nil and addon:CategoryEnabled(category)) then
+		local category = self:GetItemCategory(data.bagid, data.slotid, data.itemInfo)
+		if (category ~= nil and self:CategoryEnabled(category)) then
 			return L:G(category)
 		end
 	end
@@ -195,21 +181,21 @@ end
 
 ---@param slot number
 function addon:RemoveBindConfirmFromCategory(slot)
-	if addon.bindConfirm == nil then return end
-	if not addon.IsRetail then return end
+	if self.bindConfirm == nil then return end
+	if not self.IsRetail then return end
 
-	local id = addon.bindConfirm.id
+	local id = self.bindConfirm.id
 	local itemID = C_Item.GetItemID({ equipmentSlotIndex = slot })
 
-	local category = addon.bindConfirm.category
+	local category = self.bindConfirm.category
 	local categoryName = GetCategory(itemID)
 
 	-- ensure we're deleting an item from the correct category
 	if (itemID ~= id or category ~= categoryName) then return end
 
-	if (category == L:G(addon.S_BOE) or category == L:G(addon.S_WUE)) then
+	if (category == L:G(self.S_BOE) or category == L:G(self.S_WUE)) then
 		Categories:RemoveItemFromCategory(itemID)
-		addon.bindConfirm = nil -- Clear the bind confirm
+		self.bindConfirm = nil -- Clear the bind confirm
 	end
 end
 
@@ -232,9 +218,7 @@ if (priorityEnabled) then
 
 	-- If the priority addon is available, we register the custom category as an empty filter with BetterBags to keep the
 	-- "enable system" working. The actual filtering will be done by the priority addon
-	Categories:RegisterCategoryFunction("BoEBoAItemsCategoryFilter", function(data)
-		return nil
-	end)
+	Categories:RegisterCategoryFunction("BoEBoAItemsCategoryFilter", function() return nil end)
 
 	-- categoriesWithPriority:RegisterCategoryFunction("YOUR_ADDON_TITLE", "YOUR_FILTER_NAME_HERE", fn)
 	PriorityCategories:RegisterCategoryFunction(L:G("Bound"), "BoEBoAItemsCategoryFilter", function(data)
