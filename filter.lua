@@ -68,12 +68,10 @@ function addon:GetItemCategory(bagIndex, slotIndex, itemInfo)
 	--- Whether we have C_TooltipInfo APIs available
 	if (self.IsRetail) then
 		local tooltipInfo = C_TooltipInfo_GetBagItem(bagIndex, slotIndex)
-		if not tooltipInfo then return end
+		if not tooltipInfo or not tooltipInfo.lines then return end
 		for i = 2, 6 do
 			local line = tooltipInfo.lines[i]
-			if (not line) then
-				break
-			end
+			if (not line) then break end
 			local bind = self:GetBindString(line.leftText)
 			if (bind) then
 				category = bind

@@ -97,7 +97,7 @@ addon.options = {
 				end,
 			},
 			enableBop = {
-				type= "toggle",
+				type = "toggle",
 				order = 3,
 				name = L:G("Category: Soulbound"),
 				desc = L:G("If enabled, will categorize BoP items."),
