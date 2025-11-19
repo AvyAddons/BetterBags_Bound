@@ -33,12 +33,12 @@ local string_find = string.find
 ---@param patterns string[]
 ---@return boolean|nil
 local function str_matchm(inputString, patterns)
-    for i = 1, #patterns do
-        if string_find(inputString, patterns[i]) then
-            return true
-        end
-    end
-    return nil
+	for i = 1, #patterns do
+		if string_find(inputString, patterns[i]) then
+			return true
+		end
+	end
+	return nil
 end
 
 -- WoW API
@@ -46,6 +46,12 @@ end
 local CreateFrame = CreateFrame
 local C_TooltipInfo_GetBagItem = C_TooltipInfo and C_TooltipInfo.GetBagItem
 local C_Item_IsEquippableItem = C_Item and C_Item.IsEquippableItem
+-- Item quality constants
+local QUALITY_POOR = 0
+-- Bind type constants
+local BIND_NONE = 0
+local BIND_QUEST = 4
+local BIND_UNUSED = 6
 
 -----------------------------------------------------------
 -- Filter Setup
@@ -154,15 +160,27 @@ function addon:CategoryFilter(data)
 	local quality = data.itemInfo.itemQuality
 	local bindType = data.itemInfo.bindType
 	local equippable = C_Item_IsEquippableItem(data.itemInfo.itemID)
+
+	-- Early return for non-equippable if setting enabled
 	if (self.db.onlyEquippable and not equippable) then return nil end
 
-	-- Only parse items that are Common (1) and above, and are of type BoP, BoE, BoU, BoA, BoW
-	local junk = quality ~= nil and quality == 0
-	if (not junk or (bindType ~= nil and bindType > 0 and (bindType < 4 or bindType > 6))) then
-		local category = self:GetItemCategory(data.bagid, data.slotid, data.itemInfo)
-		if (category ~= nil and self:CategoryEnabled(category)) then
-			return L:G(category)
-		end
+	-- Skip junk items (gray quality)
+	local isJunk = quality == QUALITY_POOR
+	if isJunk then return nil end
+
+	-- Skip items with no bind type
+	local hasNoBind = not bindType or bindType == BIND_NONE
+	if hasNoBind then return nil end
+
+	-- Skip quest items and unused binds (bind types 4-6)
+	local isQuestItem = bindType >= BIND_QUEST and bindType <= BIND_UNUSED
+	if isQuestItem then return nil end
+
+
+	-- Item qualifies for categorization
+	local category = self:GetItemCategory(data.bagid, data.slotid, data.itemInfo)
+	if (category ~= nil and self:CategoryEnabled(category)) then
+		return L:G(category)
 	end
 
 	return nil

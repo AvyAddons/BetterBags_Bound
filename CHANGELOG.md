@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file. Be aware th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Improved
+- Internal performance updates
+
 ## [1.12.4] 2025-11-19
 ### Changed
 - Bump TOC to 11.2.7
