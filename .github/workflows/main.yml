@@ -1,13 +1,23 @@
 name: Packager
+permissions:
+  contents: write
 
 on:
   push:
+    branches:
+      - main
     tags:
       - "**"
+    paths-ignore:
+      - ".github/**"
+      - ".libraries/**"
+      - ".gitmodules"
 
 jobs:
   release:
     runs-on: ubuntu-latest
+    concurrency:
+      group: packager
 
     env:
       GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
@@ -21,4 +31,4 @@ jobs:
           fetch-depth: 0
 
       - name: Package and release
-        uses: BigWigsMods/packager@v2
+        uses: BigWigsMods/packager@v2.5.0
