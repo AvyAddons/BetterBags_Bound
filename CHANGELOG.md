@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ## [Unreleased]
 ### Changed
 - Bump TOC to 11.2.7
+- Bump MoP TOC to 5.5.2
 
 ## [1.12.3] 2025-10-08
 ### Improved
@@ -15,6 +16,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Changed
 - Bump TOC to 11.2.5
 - Bump MoP TOC to 5.5.1
+
 ### Improvements
 - Added this plugin to the BetterBags group
 
