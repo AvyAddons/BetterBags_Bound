@@ -97,9 +97,7 @@ function addon:GetItemCategory(bagIndex, slotIndex, itemInfo)
 			end
 			local lines = self.GetTooltipLines(Scanner)
 			for _, line in ipairs(lines) do
-				if (line == '') then
-					break
-				end
+				if (line == '') then break end
 				local bind = self:GetBindString(line)
 				if (bind) then
 					category = bind
