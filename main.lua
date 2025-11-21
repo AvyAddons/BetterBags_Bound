@@ -62,17 +62,21 @@ addon.S_BOE = "BoE"
 addon.S_WUE = "WuE"
 addon.S_BOP = "Soulbound"
 addon.IsRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
-addon.isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
-addon.isBCC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
-addon.isCata = WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC
-addon.isMists = WOW_PROJECT_ID == WOW_PROJECT_MISTS_CLASSIC
+addon.IsClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+addon.IsBCC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
+addon.IsCata = WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC
+addon.IsMists = WOW_PROJECT_ID == WOW_PROJECT_MISTS_CLASSIC
 
 -- Addon Core
 -----------------------------------------------------------
 addon.eventFrame = CreateFrame("Frame", addonName .. "EventFrame", UIParent)
 addon.eventFrame:RegisterEvent("ADDON_LOADED")
-addon.eventFrame:RegisterEvent("EQUIP_BIND_CONFIRM")
-addon.eventFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
+
+if not addon.IsClassic then -- events are scuffed in Classic
+	addon.eventFrame:RegisterEvent("EQUIP_BIND_CONFIRM")
+	addon.eventFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
+end
+
 addon.eventFrame:SetScript("OnEvent", function(_, event, ...)
 	if event == "ADDON_LOADED" then
 		local name = ...
@@ -102,14 +106,12 @@ addon.eventFrame:SetScript("OnEvent", function(_, event, ...)
 			Config:AddPluginConfig(L:G("Bound"), addon.options)
 		end
 	elseif event == "EQUIP_BIND_CONFIRM" then
-		if addon.isClassic then return end -- event is scuffed in Classic
 		local _, itemLocation = ...
 		local bag, slot = itemLocation:GetBagAndSlot()
 		local id = C_Item.GetItemID(itemLocation)
 		local category = addon:GetItemCategory(bag, slot, nil)
 		addon.bindConfirm = { id = id, category = category }
 	elseif event == "PLAYER_EQUIPMENT_CHANGED" then
-		if addon.isClassic then return end -- event is scuffed in Classic
 		local slot, hasCurrent = ...
 		-- hasCurrent is false if the slot was just equipped
 		if (slot ~= nil and not hasCurrent) then
