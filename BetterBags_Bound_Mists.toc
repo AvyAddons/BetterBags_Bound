@@ -1,4 +1,4 @@
-## Interface: 50502
+## Interface: 50503
 
 ## Title: BetterBags - BoE & BoA
 ## Notes: Adds BoE & BoA filters to BetterBags.
