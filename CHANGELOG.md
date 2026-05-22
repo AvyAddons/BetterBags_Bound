@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file. Be aware th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Added
+- Support for TBC Anniversary
+
+### Changes
+- Bump Retail TOC to 12.0.5
+
 ## [1.13.0] 2026-01-22
 ### Changes
 - Bump Retail TOC to 12.0.0
