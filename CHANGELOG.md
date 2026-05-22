@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file. Be aware th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Removed
+- Dropped support for 11.2.x client
+
 ## [1.14.0] 2026-05-22
 ### Added
 - Support for TBC Anniversary
