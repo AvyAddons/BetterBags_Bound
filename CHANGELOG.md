@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file. Be aware th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Changed
+- Bump Retail TOC to 12.1.0
+- Bump Mists TOC to 5.5.4
+- Bump TBC TOC to 2.5.6
+- Bump Classic TOC to 1.15.9
+
 ## [1.14.1] 2026-05-23
 ### Removed
 - Dropped support for 11.2.x client
