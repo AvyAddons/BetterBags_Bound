@@ -1,4 +1,4 @@
----@meta
+---@meta _
 
 ---@enum BagKind
 local BAG_KIND = {
@@ -24,6 +24,7 @@ local BINDING_SCOPE = {
 
 ---@class SearchCategory
 ---@field query string The search query for the category.
+---@field groupBy? number The groupBy type (0=None, 1=Type, 2=Subtype, 3=Expansion). Default is 0 (None).
 
 ---@class (exact) CustomCategoryFilter
 ---@field name string The name of this category as it appears for the user.
@@ -34,8 +35,10 @@ local BINDING_SCOPE = {
 ---@field searchCategory? SearchCategory If defined, this category is a search category.
 ---@field note? string A note about the category.
 ---@field color? number[] The RGB color of the category name.
----@field priority? number The priority of the category. A higher number has a higher priority.
+---@field priority? number The priority of the category. Lower numbers have higher priority (e.g. 1 > 10). Default is 10.
 ---@field dynamic? boolean If true, this category is dynamic and added to the database at runtime.
+---@field isGroupBySubcategory? boolean If true, this category is a groupBy subcategory and should not be manually deleted.
+---@field groupByParent? string If this is a groupBy subcategory, this is the name of the parent search category.
 
 -- ItemLinkInfo contains all the information parsed from an item link.
 ---@class (exact) ItemLinkInfo
@@ -93,7 +96,7 @@ local BINDING_SCOPE = {
 ---@field bagName string
 ---@field forceClear boolean
 ---@field nextStack string
-local itemData = {};
+local itemData = {}
 
 -- ItemInfo is the information about an item that is returned by GetItemInfo.
 ---@class (exact) ExpandedItemInfo
@@ -127,6 +130,8 @@ local itemData = {};
 ---@field category string
 ---@field currentItemLevel number
 ---@field equipmentSets string[]|nil
+---@field tooltipText string
+---@field isBattlePayItem boolean
 
 ---@enum ExpansionType
 local EXPANSION_TYPE = {
@@ -141,4 +146,5 @@ local EXPANSION_TYPE = {
 	LE_EXPANSION_SHADOWLANDS = 8,
 	LE_EXPANSION_DRAGONFLIGHT = 9,
 	LE_EXPANSION_WAR_WITHIN = 10,
+	LE_EXPANSION_MIDNIGHT = 11,
 }
