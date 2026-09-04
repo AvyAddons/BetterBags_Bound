@@ -13,4 +13,5 @@ ignore:
     - CODE_OF_CONDUCT.md
     - README.md
     - .editorconfig
+    - mise.toml
     - .github

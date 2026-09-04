@@ -15,7 +15,7 @@ on:
 
 jobs:
   release:
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     concurrency:
       group: packager
 
@@ -31,4 +31,4 @@ jobs:
           fetch-depth: 0
 
       - name: Package and release
-        uses: BigWigsMods/packager@v2.5.0
+        uses: BigWigsMods/packager@v2.5.1
