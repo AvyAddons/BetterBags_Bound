@@ -109,7 +109,7 @@ addon.eventFrame:SetScript("OnEvent", function(_, event, ...)
 		local _, itemLocation = ...
 		local bag, slot = itemLocation:GetBagAndSlot()
 		local id = C_Item.GetItemID(itemLocation)
-		local category = addon:GetItemCategory(bag, slot, nil)
+		local category = addon:GetItemCategory(bag, slot)
 		addon.bindConfirm = { id = id, category = category }
 	elseif event == "PLAYER_EQUIPMENT_CHANGED" then
 		local slot, hasCurrent = ...

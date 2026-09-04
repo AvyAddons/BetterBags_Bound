@@ -25,8 +25,16 @@ local Database = BetterBags:GetModule('Database')
 ---@class Localization: AceModule
 local L = BetterBags:GetModule('Localization')
 
+---@class Constants: AceModule
+---@field BINDING_SCOPE BindingScopes
+local Constants = BetterBags:GetModule('Constants')
+
+local Scope = Constants.BINDING_SCOPE
+
 -- Lua API
 -----------------------------------------------------------
+local _G = _G
+local math_min = math.min
 local string_find = string.find
 
 ---@param inputString string
@@ -34,7 +42,7 @@ local string_find = string.find
 ---@return boolean|nil
 local function str_matchm(inputString, patterns)
 	for i = 1, #patterns do
-		if string_find(inputString, patterns[i]) then
+		if string_find(inputString, patterns[i], 1, true) then
 			return true
 		end
 	end
@@ -46,12 +54,6 @@ end
 local CreateFrame = CreateFrame
 local C_TooltipInfo_GetBagItem = C_TooltipInfo and C_TooltipInfo.GetBagItem
 local C_Item_IsEquippableItem = C_Item and C_Item.IsEquippableItem
--- Item quality constants
-local QUALITY_POOR = 0
--- Bind type constants
-local BIND_NONE = 0
-local BIND_QUEST = 4
-local BIND_UNUSED = 6
 
 -----------------------------------------------------------
 -- Filter Setup
@@ -60,82 +62,117 @@ local BOP_STRINGS = { ITEM_SOULBOUND, ITEM_BIND_ON_PICKUP }
 local BOA_STRINGS = { ITEM_ACCOUNTBOUND, ITEM_BNETACCOUNTBOUND, ITEM_BIND_TO_ACCOUNT, ITEM_BIND_TO_BNETACCOUNT }
 local WUE_STRINGS = { ITEM_ACCOUNTBOUND_UNTIL_EQUIP, ITEM_BIND_TO_ACCOUNT_UNTIL_EQUIP }
 
+-- Identifies the binding line in C_TooltipInfo data. Retail only. The line carries a
+-- `bonding` boolean rather than an Enum.TooltipDataItemBinding value, so the localized
+-- leftText is still the only thing that names which binding it is.
+local ITEM_BINDING_LINE = Enum.TooltipDataLineType and Enum.TooltipDataLineType.ItemBinding
+
+--- Get the category of an item based on its binding info.
+--- @param bindingInfo BindingInfo
+--- @param bindType? Enum.ItemBind|nil
+--- @return string|nil
+function addon:GetBindingInfoCategory(bindingInfo, bindType)
+	local binding = bindingInfo.binding
+	if not binding then return end
+
+	if binding == Scope.SOULBOUND then
+		return self.S_BOP
+	elseif binding == Scope.BOUND then
+		if bindType == Enum.ItemBind.ToWoWAccount or bindType == Enum.ItemBind.ToBnetAccount then
+			return self.S_BOA
+		end
+		return self.S_BOP
+	elseif binding == Scope.BOE then
+		return self.S_BOE
+	elseif binding == Scope.ACCOUNT or binding == Scope.BNET then
+		return self.S_BOA
+	elseif binding == Scope.WUE then
+		return self.S_WUE
+	end
+end
+
+-- One scanner frame for the lifetime of the session. Sharing it is only safe because we
+-- read lines via NumLines() and the template's named TextLeft font strings, which are
+-- scoped to whatever the current item populated. Reading GetRegions() instead returns
+-- every font string the frame has ever created, so a shorter item reused after a longer
+-- one picks up the previous item's text. GameTooltipTemplate is required for the named
+-- font strings; SharedTooltipTemplate does not create them.
+local scanner
+
 -- Tooltip used for scanning.
 local _SCANNER = "AVY_ScannerTooltip"
 
---- Get the category of an item.
+---@return GameTooltip
+local function GetScanner()
+	if not scanner then
+		scanner = CreateFrame("GameTooltip", _SCANNER, nil, "GameTooltipTemplate")
+		scanner:SetOwner(WorldFrame, "ANCHOR_NONE")
+	end
+	return scanner
+end
+
+--- Read the binding out of C_TooltipInfo data, without building a tooltip frame.
 ---@param bagIndex number
 ---@param slotIndex number
----@param itemInfo ExpandedItemInfo|nil
 ---@return string|nil
-function addon:GetItemCategory(bagIndex, slotIndex, itemInfo)
-	local category = nil
+local function ScanTooltipData(bagIndex, slotIndex)
+	local tooltipInfo = C_TooltipInfo_GetBagItem(bagIndex, slotIndex)
+	if not tooltipInfo or not tooltipInfo.lines then return nil end
 
-	--- Whether we have C_TooltipInfo APIs available
-	if (self.IsRetail) then
-		local tooltipInfo = C_TooltipInfo_GetBagItem(bagIndex, slotIndex)
-		if not tooltipInfo or not tooltipInfo.lines then return end
-		for i = 2, 6 do
-			local line = tooltipInfo.lines[i]
-			if (not line) then break end
-			local bind = self:GetBindString(line.leftText)
-			if (bind) then
-				category = bind
-				break
-			end
-		end
-	else
-		if itemInfo == nil then return end
-		if (itemInfo.bindType == 2 or itemInfo.bindType == 3) then
-			local Scanner = CreateFrame("GameTooltip", _SCANNER .. itemInfo.itemGUID, nil, "SharedTooltipTemplate")
-			Scanner:SetOwner(WorldFrame, "ANCHOR_NONE")
-			Scanner:ClearLines()
-			if bagIndex == BANK_CONTAINER then
-				Scanner:SetInventoryItem("player", BankButtonIDToInvSlotID(slotIndex, nil))
-			else
-				Scanner:SetBagItem(bagIndex, slotIndex)
-			end
-			local lines = self.GetTooltipLines(Scanner)
-			for _, line in ipairs(lines) do
-				if (line == '') then break end
-				local bind = self:GetBindString(line)
-				if (bind) then
-					category = bind
-					break
-				end
-			end
-			Scanner:Hide()
+	-- An item has at most one binding line. Finding it by type is locale independent
+	local lines = tooltipInfo.lines
+	for i = 1, #lines do
+		local line = lines[i]
+		if line.type == ITEM_BINDING_LINE then
+			return addon:GetBindString(line.leftText)
 		end
 	end
+	return nil
+end
+
+--- Read the binding off a hidden tooltip frame, for clients without C_TooltipInfo.
+---@param bagIndex number
+---@param slotIndex number
+---@return string|nil
+local function ScanTooltipFrame(bagIndex, slotIndex)
+	local tooltip = GetScanner()
+	tooltip:ClearLines()
+	if bagIndex == BANK_CONTAINER then
+		tooltip:SetInventoryItem("player", BankButtonIDToInvSlotID(slotIndex, nil))
+	else
+		tooltip:SetBagItem(bagIndex, slotIndex)
+	end
+
+	-- Zero lines means the item data was not ready
+	local numLines = tooltip:NumLines()
+	if numLines == 0 then
+		tooltip:Hide()
+		return nil
+	end
+
+	local category = nil
+	-- Capped at 30: on Classic, font strings past line 9 can carry incorrect names.
+	for i = 1, math_min(numLines, 30) do
+		local fontString = _G[_SCANNER .. "TextLeft" .. i]
+		local text = fontString and fontString:GetText()
+		if text and text ~= "" then
+			category = addon:GetBindString(text)
+			if category then break end
+		end
+	end
+	tooltip:Hide()
 	return category
 end
 
----@param msg string
+--- Get the category of an item by inspecting its tooltip.
+---@param bagIndex number
+---@param slotIndex number
 ---@return string|nil
-function addon:GetBindString(msg)
-	if (msg) then
-		if (string_find(msg, ITEM_BIND_ON_EQUIP)) then
-			return self.S_BOE
-		elseif (str_matchm(msg, WUE_STRINGS)) then
-			return self.S_WUE
-		elseif (str_matchm(msg, BOA_STRINGS)) then
-			return self.S_BOA
-		elseif (str_matchm(msg, BOP_STRINGS)) then
-			return self.S_BOP
-		end
+function addon:GetItemCategory(bagIndex, slotIndex)
+	if self.IsRetail then
+		return ScanTooltipData(bagIndex, slotIndex)
 	end
-end
-
----@param tooltip GameTooltip
-function addon.GetTooltipLines(tooltip)
-	local textLines = {}
-	local regions = { tooltip:GetRegions() }
-	for _, r in ipairs(regions) do
-		if r:IsObjectType("FontString") then
-			table.insert(textLines, r:GetText())
-		end
-	end
-	return textLines
+	return ScanTooltipFrame(bagIndex, slotIndex)
 end
 
 ---@param category string|nil
@@ -153,30 +190,44 @@ function addon:CategoryEnabled(category)
 	return false
 end
 
+-- Order matters. ITEM_ACCOUNTBOUND ("Warbound") and ITEM_BIND_TO_ACCOUNT ("Binds to
+-- Warband") are prefixes of their _UNTIL_EQUIP counterparts, so WuE must be tested
+-- before BoA or every Warbound-until-equipped item is filed as BoA.
+---@param msg string
+---@return string|nil
+function addon:GetBindString(msg)
+	if (msg) then
+		if (string_find(msg, ITEM_BIND_ON_EQUIP, 1, true)) then
+			return self.S_BOE
+		elseif (str_matchm(msg, WUE_STRINGS)) then
+			return self.S_WUE
+		elseif (str_matchm(msg, BOA_STRINGS)) then
+			return self.S_BOA
+		elseif (str_matchm(msg, BOP_STRINGS)) then
+			return self.S_BOP
+		end
+	end
+end
+
 ---@param data ItemData
 function addon:CategoryFilter(data)
 	local quality = data.itemInfo.itemQuality
-	local bindType = data.itemInfo.bindType
+	local bindInfo = data.bindingInfo or {}
 	local equippable = C_Item_IsEquippableItem(data.itemInfo.itemID)
 
 	-- Early return for non-equippable if setting enabled
 	if (self.db.onlyEquippable and not equippable) then return nil end
 
+	-- Skip non-binding items
+	if not bindInfo.binding then return nil end
+	if bindInfo.binding == Scope.NONBINDING or bindInfo.binding == Scope.QUEST then return nil end
+
 	-- Skip junk items (gray quality)
-	local isJunk = quality == QUALITY_POOR
-	if isJunk then return nil end
+	if quality == Enum.ItemQuality.Poor then return nil end
 
-	-- Skip items with no bind type
-	local hasNoBind = not bindType or bindType == BIND_NONE
-	if hasNoBind then return nil end
-
-	-- Skip quest items and unused binds (bind types 4-6)
-	local isQuestItem = bindType >= BIND_QUEST and bindType <= BIND_UNUSED
-	if isQuestItem then return nil end
-
-
-	-- Item qualifies for categorization
-	local category = self:GetItemCategory(data.bagid, data.slotid, data.itemInfo)
+	-- Item qualifies for further categorization
+	local category = self:GetBindingInfoCategory(bindInfo, data.itemInfo.bindType)
+	if category == nil then category = self:GetItemCategory(data.bagid, data.slotid) end
 	if (category ~= nil and self:CategoryEnabled(category)) then
 		return L:G(category)
 	end

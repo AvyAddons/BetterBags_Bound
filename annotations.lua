@@ -7,7 +7,7 @@ local BAG_KIND = {
 	BANK = 1,
 }
 
----@enum BindingScope  -- similar. but distinct from ItemBind
+---@enum BindingScope  -- similar but distinct from ItemBind
 local BINDING_SCOPE = {
 	UNKNOWN = -1,
 	NONBINDING = 0,
@@ -21,6 +21,21 @@ local BINDING_SCOPE = {
 	BNET = 8,
 	WUE = 9,
 }
+
+-- The table BetterBags exposes as Constants.BINDING_SCOPE. BindingScope names the enum's
+-- values, so it cannot also name the table holding them.
+---@class BindingScopes
+---@field UNKNOWN BindingScope
+---@field NONBINDING BindingScope
+---@field BOUND BindingScope
+---@field BOE BindingScope
+---@field BOU BindingScope
+---@field QUEST BindingScope
+---@field SOULBOUND BindingScope
+---@field REFUNDABLE BindingScope
+---@field ACCOUNT BindingScope
+---@field BNET BindingScope
+---@field WUE BindingScope
 
 ---@class SearchCategory
 ---@field query string The search query for the category.
@@ -130,8 +145,9 @@ local itemData = {}
 ---@field category string
 ---@field currentItemLevel number
 ---@field equipmentSets string[]|nil
----@field tooltipText string
+---@field tooltipText? string
 ---@field isBattlePayItem boolean
+---@field emptySlotName? string
 
 ---@enum ExpansionType
 local EXPANSION_TYPE = {

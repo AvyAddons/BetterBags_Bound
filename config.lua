@@ -17,7 +17,7 @@ local Categories = BetterBags:GetModule('Categories')
 local L = BetterBags:GetModule('Localization')
 
 ---@class Events: AceModule
----@field SendMessage fun(self: Events, message: string, ...: any): nil
+---@field SendMessage fun(self: Events, ctx: Context, message: string, ...: any): nil
 local Events = BetterBags:GetModule('Events')
 
 ---@class Items: AceModule
