@@ -27,19 +27,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Added
 - Support for TBC Anniversary
 
-### Changes
+### Changed
 - Bump Retail TOC to 12.0.5
 
 ## [1.13.0] 2026-01-22
-### Changes
+### Changed
 - Bump Retail TOC to 12.0.0
 - Bump Mists TOC to 5.5.3
 
 ## [1.12.5] 2025-11-21
-### Changes
+### Changed
 - Bump Classic TOC to 1.15.8
-
-### Improved
 - Internal performance updates
 
 ## [1.12.4] 2025-11-19
@@ -48,15 +46,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Bump MoP TOC to 5.5.2
 
 ## [1.12.3] 2025-10-08
-### Improved
+### Changed
 - Internal performance updates
 
 ## [1.12.2] 2025-10-06
 ### Changed
 - Bump TOC to 11.2.5
 - Bump MoP TOC to 5.5.1
-
-### Improvements
 - Added this plugin to the BetterBags group
 
 ## [1.12.1] 2025-10-04
