@@ -10,8 +10,6 @@ local BetterBags = LibStub('AceAddon-3.0'):GetAddon("BetterBags")
 ---@field GetCategoryByName fun(self: Categories, name: string): CustomCategoryFilter|nil
 ---@field RemoveItemFromCategory fun(self: Categories, itemID: number): nil
 ---@field RegisterCategoryFunction fun(self: Categories, name: string, fn: fun(data: ItemData): string|nil): nil
----@field ephemeralCategories table<string, CustomCategoryFilter> -- private
----@field ephemeralCategoryByItemID table<number, CustomCategoryFilter>
 local Categories = BetterBags:GetModule('Categories')
 
 ---@class Events: AceModule
@@ -30,6 +28,22 @@ local L = BetterBags:GetModule('Localization')
 local Constants = BetterBags:GetModule('Constants')
 
 local Scope = Constants.BINDING_SCOPE
+
+-- Our own record of what we filed each item under, keyed by item ID and holding the
+-- unlocalized category key. BetterBags tracks the same thing, but only on a field its
+-- Categories module marks private, so we keep our own rather than reach into it.
+---@type table<number, string>
+addon.itemCategories = {}
+
+-- Stripped from release builds by the packager, leaving the no-op behind.
+---@param fmt string
+---@param ... any
+local function debugPrint(fmt, ...) end
+--@debug@
+debugPrint = function(fmt, ...)
+	print("BBBound: " .. fmt:format(...))
+end
+--@end-debug@
 
 -- Lua API
 -----------------------------------------------------------
@@ -229,19 +243,22 @@ function addon:CategoryFilter(data)
 	local category = self:GetBindingInfoCategory(bindInfo, data.itemInfo.bindType)
 	if category == nil then category = self:GetItemCategory(data.bagid, data.slotid) end
 	if (category ~= nil and self:CategoryEnabled(category)) then
+		self.itemCategories[data.itemInfo.itemID] = category
 		return L:G(category)
 	end
 
 	return nil
 end
 
-local function GetCategory(itemID)
-	local category = Database:GetItemCategoryByItemID(itemID)
-	if (category and category.name) then return category.name end
-	-- this might break due to using internals of the Categories module
-	category = Categories.ephemeralCategoryByItemID[itemID]
-	if (category and category.name) then return category.name end
-	return nil
+-- ForgetCategory drops our record of every item filed under a category. Call it wherever we
+-- ask BetterBags to wipe or delete that same category, so the two stay in step.
+---@param category string
+function addon:ForgetCategory(category)
+	for itemID, filed in pairs(self.itemCategories) do
+		if filed == category then
+			self.itemCategories[itemID] = nil
+		end
+	end
 end
 
 ---@param slot number
@@ -251,16 +268,32 @@ function addon:RemoveBindConfirmFromCategory(slot)
 
 	local id = self.bindConfirm.id
 	local itemID = C_Item.GetItemID({ equipmentSlotIndex = slot })
+	if (itemID ~= id) then
+		debugPrint("slot %d holds %s, not the %s we confirmed", slot, tostring(itemID), tostring(id))
+		return
+	end
 
-	local category = self.bindConfirm.category
-	local categoryName = GetCategory(itemID)
+	-- RemoveItemFromCategory takes no category name: it clears the item from BetterBags'
+	-- ephemeral map and deletes any saved assignment outright. A saved category is either one
+	-- the user built by hand or our own Soulbound, and we must not destroy either.
+	local saved = Database:GetItemCategoryByItemID(itemID)
+	if (saved and saved.name) then
+		debugPrint("%d is saved under %s, leaving it alone", itemID, saved.name)
+		return
+	end
 
-	-- ensure we're deleting an item from the correct category
-	if (itemID ~= id or category ~= categoryName) then return end
+	local category = self.itemCategories[itemID]
+	if (category ~= self.bindConfirm.category) then
+		debugPrint("%d is filed as %s, not the %s we confirmed", itemID, tostring(category),
+			tostring(self.bindConfirm.category))
+		return
+	end
 
-	if (category == L:G(self.S_BOE) or category == L:G(self.S_WUE)) then
+	if (category == self.S_BOE or category == self.S_WUE) then
 		Categories:RemoveItemFromCategory(itemID)
+		self.itemCategories[itemID] = nil
 		self.bindConfirm = nil -- Clear the bind confirm
+		debugPrint("removed %d from %s", itemID, category)
 	end
 end
 

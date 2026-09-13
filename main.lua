@@ -97,9 +97,10 @@ addon.eventFrame:SetScript("OnEvent", function(_, event, ...)
 			addon.db = db
 			-- Wipe categories on load.
 			if (addon.db.wipeOnLoad) then
-				Categories:WipeCategory(context:New('Bound_OnLoadWipe_' .. addon.S_BOA), L:G(addon.S_BOA))
-				Categories:WipeCategory(context:New('Bound_OnLoadWipe_' .. addon.S_BOE), L:G(addon.S_BOE))
-				Categories:WipeCategory(context:New('Bound_OnLoadWipe_' .. addon.S_WUE), L:G(addon.S_WUE))
+				for _, category in ipairs({ addon.S_BOA, addon.S_BOE, addon.S_WUE }) do
+					Categories:WipeCategory(context:New('Bound_OnLoadWipe_' .. category), L:G(category))
+					addon:ForgetCategory(category)
+				end
 			end
 
 			-- Load config only after populating the DB, since BetterBags will cache the get function

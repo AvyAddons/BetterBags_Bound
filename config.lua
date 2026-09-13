@@ -49,6 +49,7 @@ addon.options = {
 						Categories:ReprocessAllItems(addon.ctx:Copy())
 					else
 						Categories:DeleteCategory(addon.ctx:Copy(), L:G(addon.S_BOE))
+						addon:ForgetCategory(addon.S_BOE)
 					end
 				end,
 			},
@@ -71,6 +72,7 @@ addon.options = {
 						Categories:ReprocessAllItems(addon.ctx:Copy())
 					else
 						Categories:DeleteCategory(addon.ctx:Copy(), L:G(addon.S_WUE))
+						addon:ForgetCategory(addon.S_WUE)
 					end
 				end,
 			},
@@ -93,6 +95,7 @@ addon.options = {
 						Categories:ReprocessAllItems(addon.ctx:Copy())
 					else
 						Categories:DeleteCategory(addon.ctx:Copy(), L:G(addon.S_BOA))
+						addon:ForgetCategory(addon.S_BOA)
 					end
 				end,
 			},
@@ -115,6 +118,7 @@ addon.options = {
 						Categories:ReprocessAllItems(addon.ctx:Copy())
 					else
 						Categories:DeleteCategory(addon.ctx:Copy(), L:G(addon.S_BOP))
+						addon:ForgetCategory(addon.S_BOP)
 					end
 				end,
 			},
@@ -130,9 +134,10 @@ addon.options = {
 				set = function(_, value)
 					addon.db.onlyEquippable = value
 					if (addon.db.onlyEquippable) then
-						Categories:WipeCategory(addon.ctx:Copy(), L:G(addon.S_BOA))
-						Categories:WipeCategory(addon.ctx:Copy(), L:G(addon.S_BOE))
-						Categories:WipeCategory(addon.ctx:Copy(), L:G(addon.S_WUE))
+						for _, category in ipairs({ addon.S_BOA, addon.S_BOE, addon.S_WUE }) do
+							Categories:WipeCategory(addon.ctx:Copy(), L:G(category))
+							addon:ForgetCategory(category)
+						end
 						Categories:ReprocessAllItems(addon.ctx:Copy())
 					end
 				end,

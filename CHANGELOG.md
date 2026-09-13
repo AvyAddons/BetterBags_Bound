@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file. Be aware th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Changed
+- Stop reading BetterBags internals when clearing equipped items from a category
+
 ## [1.15.0] 2026-08-14
 ### Changed
 - Bump Retail TOC to 12.1.0
