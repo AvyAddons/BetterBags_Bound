@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file. Be aware th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [2.0.1] 2026-09-13
 ### Fixed
 - BoE, WuE and BoA items no longer go missing from their categories after logging in
 
