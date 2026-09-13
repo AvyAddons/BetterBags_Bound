@@ -3,8 +3,9 @@ All notable changes to this project will be documented in this file. Be aware th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [2.0.0] 2026-09-13
 ### Changed
+- Rewrote how items are categorized: bindings now come from the game's binding info instead of tooltip scanning
 - Speed up categorization when a bag or bank is first scanned
 
 ### Fixed
