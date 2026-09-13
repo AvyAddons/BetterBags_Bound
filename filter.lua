@@ -67,7 +67,18 @@ end
 -----------------------------------------------------------
 local CreateFrame = CreateFrame
 local C_TooltipInfo_GetBagItem = C_TooltipInfo and C_TooltipInfo.GetBagItem
-local C_Item_IsEquippableItem = C_Item and C_Item.IsEquippableItem
+
+-- Equip locations GetItemInfo reports for items that cannot be worn. We read that field
+-- rather than ask C_Item.IsEquippableItem: during BetterBags' login sweep on 12.1 that call
+-- answers false for every bag item, by ID and by link alike, while GetItemInfo is already
+-- returning names and equip locations for the same items. BetterBags caches a nil verdict per
+-- item ID for the session, so one wrong answer at login hides the item until reload.
+---@type table<string, boolean>
+local NON_EQUIP_LOCATIONS = {
+	[""] = true,
+	INVTYPE_NON_EQUIP = true,
+	INVTYPE_NON_EQUIP_IGNORE = true,
+}
 
 -----------------------------------------------------------
 -- Filter Setup
@@ -227,7 +238,7 @@ end
 function addon:CategoryFilter(data)
 	local quality = data.itemInfo.itemQuality
 	local bindInfo = data.bindingInfo or {}
-	local equippable = C_Item_IsEquippableItem(data.itemInfo.itemID)
+	local equippable = not NON_EQUIP_LOCATIONS[data.itemInfo.itemEquipLoc]
 
 	-- Early return for non-equippable if setting enabled
 	if (self.db.onlyEquippable and not equippable) then return nil end
