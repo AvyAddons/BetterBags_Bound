@@ -5,7 +5,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 ### Changed
-- Stop reading BetterBags internals when clearing equipped items from a category
+- Speed up categorization when a bag or bank is first scanned
+
+### Fixed
+- Prevent items from landing in the wrong category in Classic
+- Improved binding detection in non-English clients
+- Reduced memory use in Classic over long sessions
 
 ## [1.15.0] 2026-08-14
 ### Changed
