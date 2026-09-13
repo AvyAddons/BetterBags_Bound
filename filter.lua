@@ -8,7 +8,7 @@ local BetterBags = LibStub('AceAddon-3.0'):GetAddon("BetterBags")
 
 ---@class Categories: AceModule
 ---@field GetCategoryByName fun(self: Categories, name: string): CustomCategoryFilter|nil
----@field RemoveItemFromCategory fun(self: Categories, itemID: number): nil
+---@field RemoveItemFromCategory fun(self: Categories, itemID: number, category?: string): nil
 ---@field RegisterCategoryFunction fun(self: Categories, name: string, fn: fun(data: ItemData): string|nil): nil
 local Categories = BetterBags:GetModule('Categories')
 
@@ -273,9 +273,10 @@ function addon:RemoveBindConfirmFromCategory(slot)
 		return
 	end
 
-	-- RemoveItemFromCategory takes no category name: it clears the item from BetterBags'
-	-- ephemeral map and deletes any saved assignment outright. A saved category is either one
-	-- the user built by hand or our own Soulbound, and we must not destroy either.
+	-- Compat guard for BetterBags below v0.5.2, where RemoveItemFromCategory took no category
+	-- name and deleted the user's saved assignment outright. The scoped call below is safe from
+	-- v0.5.2 on, so this can go once we require it. Until then it costs us the removal whenever
+	-- the user has also hand-filed the item.
 	local saved = Database:GetItemCategoryByItemID(itemID)
 	if (saved and saved.name) then
 		debugPrint("%d is saved under %s, leaving it alone", itemID, saved.name)
@@ -290,7 +291,9 @@ function addon:RemoveBindConfirmFromCategory(slot)
 	end
 
 	if (category == self.S_BOE or category == self.S_WUE) then
-		Categories:RemoveItemFromCategory(itemID)
+		-- Scoped from BetterBags v0.5.2; older versions ignore the extra argument. The name has
+		-- to be the one we handed them, which is what CategoryFilter returned.
+		Categories:RemoveItemFromCategory(itemID, L:G(category))
 		self.itemCategories[itemID] = nil
 		self.bindConfirm = nil -- Clear the bind confirm
 		debugPrint("removed %d from %s", itemID, category)
