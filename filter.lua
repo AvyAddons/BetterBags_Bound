@@ -25,6 +25,7 @@ local L = BetterBags:GetModule('Localization')
 
 ---@class Constants: AceModule
 ---@field BINDING_SCOPE BindingScopes
+---@field BAG_KIND table<string, BagKind>
 local Constants = BetterBags:GetModule('Constants')
 
 local Scope = Constants.BINDING_SCOPE
@@ -234,8 +235,73 @@ function addon:GetBindString(msg)
 	end
 end
 
+---@type table<number, BagKind>
+local pendingRetries = {}
+local retryScheduled = false
+
+---@type table<number, boolean>
+local retried = {}
+
+-- Before BetterBags v0.5.2, RemoveItemFromCategory took no category name and deleted the
+-- user's saved assignment outright. Skip such items until we require that version.
+---@param itemID number
+---@return boolean
+local function HasSavedAssignment(itemID)
+	local saved = Database:GetItemCategoryByItemID(itemID)
+	return saved ~= nil and saved.name ~= nil
+end
+
+-- BetterBags fills ItemData from GetItemInfo at harvest time and hands it to us frames later,
+-- so only the handed fields say whether that lookup had data. A loaded item always has a name.
 ---@param data ItemData
-function addon:CategoryFilter(data)
+---@return boolean
+local function HarvestedBeforeLoad(data)
+	return data.itemInfo.itemName == ""
+end
+
+function addon:FlushRetries()
+	retryScheduled = false
+	local kinds = {}
+	local flushed = 0
+	for itemID, kind in pairs(pendingRetries) do
+		if C_Item.GetItemInfo(itemID) then
+			pendingRetries[itemID] = nil
+			if not HasSavedAssignment(itemID) then
+				-- Unscoped, this drops only the ephemeral assignment and the no-category mark.
+				Categories:RemoveItemFromCategory(itemID)
+				retried[itemID] = true
+				kinds[kind] = true
+				flushed = flushed + 1
+			end
+		end
+	end
+	debugPrint("retry: cleared %d items", flushed)
+	local ctx = self.context:New("Bound_Retry")
+	if kinds[Constants.BAG_KIND.BACKPACK] then Events:SendMessage(ctx, "bags/RefreshBackpack") end
+	if kinds[Constants.BAG_KIND.BANK] then Events:SendMessage(ctx, "bags/RefreshBank") end
+end
+
+--- BetterBags sweeps the bank the moment it opens, without the item-load wait its bag sweeps
+--- get, so GetItemInfo can be empty for every bank item on that pass. Any nil we return is
+--- cached for the session and keyed by item ID alone, so an item first seen that way stays
+--- uncategorised even after it is withdrawn. Come back for it once its data has loaded.
+---@param data ItemData
+function addon:RetryWhenLoaded(data)
+	local itemID = data.itemInfo.itemID
+	if retried[itemID] or pendingRetries[itemID] then return end
+	pendingRetries[itemID] = data.kind
+	Item:CreateFromItemID(itemID):ContinueOnItemLoad(function()
+		if retryScheduled then return end
+		retryScheduled = true
+		-- Never refresh from inside the sweep that asked us.
+		C_Timer.After(0, function() addon:FlushRetries() end)
+	end)
+end
+
+---@param self ns
+---@param data ItemData
+---@return string|nil
+local function Classify(self, data)
 	local quality = data.itemInfo.itemQuality
 	local bindInfo = data.bindingInfo or {}
 	local equippable = not NON_EQUIP_LOCATIONS[data.itemInfo.itemEquipLoc]
@@ -261,6 +327,16 @@ function addon:CategoryFilter(data)
 	return nil
 end
 
+---@param data ItemData
+---@return string|nil
+function addon:CategoryFilter(data)
+	local category = Classify(self, data)
+	if category == nil and HarvestedBeforeLoad(data) then
+		self:RetryWhenLoaded(data)
+	end
+	return category
+end
+
 -- ForgetCategory drops our record of every item filed under a category. Call it wherever we
 -- ask BetterBags to wipe or delete that same category, so the two stay in step.
 ---@param category string
@@ -284,13 +360,8 @@ function addon:RemoveBindConfirmFromCategory(slot)
 		return
 	end
 
-	-- Compat guard for BetterBags below v0.5.2, where RemoveItemFromCategory took no category
-	-- name and deleted the user's saved assignment outright. The scoped call below is safe from
-	-- v0.5.2 on, so this can go once we require it. Until then it costs us the removal whenever
-	-- the user has also hand-filed the item.
-	local saved = Database:GetItemCategoryByItemID(itemID)
-	if (saved and saved.name) then
-		debugPrint("%d is saved under %s, leaving it alone", itemID, saved.name)
+	if HasSavedAssignment(itemID) then
+		debugPrint("%d has a saved assignment, leaving it alone", itemID)
 		return
 	end
 
