@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file. Be aware th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [2.0.2] 2026-09-14
 ### Fixed
 - Items first seen in the bank no longer end up in the wrong category after being withdrawn
 
