@@ -4,29 +4,31 @@ local addon = select(2, ...)
 -- BetterBags namespace
 -----------------------------------------------------------
 ---@class BetterBags: AceAddon
-local BetterBags = LibStub('AceAddon-3.0'):GetAddon("BetterBags")
+local BetterBags = LibStub("AceAddon-3.0"):GetAddon("BetterBags")
 
 ---@class Categories: AceModule
 ---@field GetCategoryByName fun(self: Categories, name: string): CustomCategoryFilter|nil
 ---@field RemoveItemFromCategory fun(self: Categories, itemID: number, category?: string): nil
 ---@field RegisterCategoryFunction fun(self: Categories, name: string, fn: fun(data: ItemData): string|nil): nil
-local Categories = BetterBags:GetModule('Categories')
+local Categories = BetterBags:GetModule("Categories")
 
 ---@class Events: AceModule
-local Events = BetterBags:GetModule('Events')
+---@field SendMessage fun(self: Events, ctx: Context, message: string, ...: any): nil
+local Events = BetterBags:GetModule("Events")
 
 ---@class Database: AceModule
 ---@field GetItemCategoryByItemID fun(self: Database, itemID: number): CustomCategoryFilter|nil
-local Database = BetterBags:GetModule('Database')
+local Database = BetterBags:GetModule("Database")
 
 -- Use the L:G() function to get the localized string.
 ---@class Localization: AceModule
-local L = BetterBags:GetModule('Localization')
+local L = BetterBags:GetModule("Localization")
 
+---@diagnostic disable-next-line: class-shadows-builtin
 ---@class Constants: AceModule
 ---@field BINDING_SCOPE BindingScopes
 ---@field BAG_KIND table<string, BagKind>
-local Constants = BetterBags:GetModule('Constants')
+local Constants = BetterBags:GetModule("Constants")
 
 local Scope = Constants.BINDING_SCOPE
 
@@ -41,14 +43,11 @@ addon.itemCategories = {}
 ---@param ... any
 local function debugPrint(fmt, ...) end
 --@debug@
-debugPrint = function(fmt, ...)
-	print("BBBound: " .. fmt:format(...))
-end
+debugPrint = function(fmt, ...) print("BBBound: " .. fmt:format(...)) end
 --@end-debug@
 
 -- Lua API
 -----------------------------------------------------------
-local _G = _G
 local math_min = math.min
 local string_find = string.find
 
@@ -57,9 +56,7 @@ local string_find = string.find
 ---@return boolean|nil
 local function str_matchm(inputString, patterns)
 	for i = 1, #patterns do
-		if string_find(inputString, patterns[i], 1, true) then
-			return true
-		end
+		if string_find(inputString, patterns[i], 1, true) then return true end
 	end
 	return nil
 end
@@ -104,9 +101,7 @@ function addon:GetBindingInfoCategory(bindingInfo, bindType)
 	if binding == Scope.SOULBOUND then
 		return self.S_BOP
 	elseif binding == Scope.BOUND then
-		if bindType == Enum.ItemBind.ToWoWAccount or bindType == Enum.ItemBind.ToBnetAccount then
-			return self.S_BOA
-		end
+		if bindType == Enum.ItemBind.ToWoWAccount or bindType == Enum.ItemBind.ToBnetAccount then return self.S_BOA end
 		return self.S_BOP
 	elseif binding == Scope.BOE then
 		return self.S_BOE
@@ -149,9 +144,7 @@ local function ScanTooltipData(bagIndex, slotIndex)
 	local lines = tooltipInfo.lines
 	for i = 1, #lines do
 		local line = lines[i]
-		if line.type == ITEM_BINDING_LINE then
-			return addon:GetBindString(line.leftText)
-		end
+		if line.type == ITEM_BINDING_LINE then return addon:GetBindString(line.leftText) end
 	end
 	return nil
 end
@@ -164,6 +157,7 @@ local function ScanTooltipFrame(bagIndex, slotIndex)
 	local tooltip = GetScanner()
 	tooltip:ClearLines()
 	if bagIndex == BANK_CONTAINER then
+		---@diagnostic disable-next-line: wrong-flavor-api
 		tooltip:SetInventoryItem("player", BankButtonIDToInvSlotID(slotIndex, nil))
 	else
 		tooltip:SetBagItem(bagIndex, slotIndex)
@@ -195,22 +189,20 @@ end
 ---@param slotIndex number
 ---@return string|nil
 function addon:GetItemCategory(bagIndex, slotIndex)
-	if self.IsRetail then
-		return ScanTooltipData(bagIndex, slotIndex)
-	end
+	if self.IsRetail then return ScanTooltipData(bagIndex, slotIndex) end
 	return ScanTooltipFrame(bagIndex, slotIndex)
 end
 
 ---@param category string|nil
 ---@return boolean
 function addon:CategoryEnabled(category)
-	if (category == self.S_BOA) then
+	if category == self.S_BOA then
 		return self.db.enableBoa
-	elseif (category == self.S_BOE) then
+	elseif category == self.S_BOE then
 		return self.db.enableBoe
-	elseif (category == self.S_WUE) then
+	elseif category == self.S_WUE then
 		return self.db.enableWue
-	elseif (category == self.S_BOP) then
+	elseif category == self.S_BOP then
 		return self.db.enableBop
 	end
 	return false
@@ -222,14 +214,14 @@ end
 ---@param msg string
 ---@return string|nil
 function addon:GetBindString(msg)
-	if (msg) then
-		if (string_find(msg, ITEM_BIND_ON_EQUIP, 1, true)) then
+	if msg then
+		if string_find(msg, ITEM_BIND_ON_EQUIP, 1, true) then
 			return self.S_BOE
-		elseif (str_matchm(msg, WUE_STRINGS)) then
+		elseif str_matchm(msg, WUE_STRINGS) then
 			return self.S_WUE
-		elseif (str_matchm(msg, BOA_STRINGS)) then
+		elseif str_matchm(msg, BOA_STRINGS) then
 			return self.S_BOA
-		elseif (str_matchm(msg, BOP_STRINGS)) then
+		elseif str_matchm(msg, BOP_STRINGS) then
 			return self.S_BOP
 		end
 	end
@@ -255,9 +247,7 @@ end
 -- so only the handed fields say whether that lookup had data. A loaded item always has a name.
 ---@param data ItemData
 ---@return boolean
-local function HarvestedBeforeLoad(data)
-	return data.itemInfo.itemName == ""
-end
+local function HarvestedBeforeLoad(data) return data.itemInfo.itemName == "" end
 
 function addon:FlushRetries()
 	retryScheduled = false
@@ -307,7 +297,7 @@ local function Classify(self, data)
 	local equippable = not NON_EQUIP_LOCATIONS[data.itemInfo.itemEquipLoc]
 
 	-- Early return for non-equippable if setting enabled
-	if (self.db.onlyEquippable and not equippable) then return nil end
+	if self.db.onlyEquippable and not equippable then return nil end
 
 	-- Skip non-binding items
 	if not bindInfo.binding then return nil end
@@ -319,7 +309,7 @@ local function Classify(self, data)
 	-- Item qualifies for further categorization
 	local category = self:GetBindingInfoCategory(bindInfo, data.itemInfo.bindType)
 	if category == nil then category = self:GetItemCategory(data.bagid, data.slotid) end
-	if (category ~= nil and self:CategoryEnabled(category)) then
+	if category ~= nil and self:CategoryEnabled(category) then
 		self.itemCategories[data.itemInfo.itemID] = category
 		return L:G(category)
 	end
@@ -331,9 +321,7 @@ end
 ---@return string|nil
 function addon:CategoryFilter(data)
 	local category = Classify(self, data)
-	if category == nil and HarvestedBeforeLoad(data) then
-		self:RetryWhenLoaded(data)
-	end
+	if category == nil and HarvestedBeforeLoad(data) then self:RetryWhenLoaded(data) end
 	return category
 end
 
@@ -342,9 +330,7 @@ end
 ---@param category string
 function addon:ForgetCategory(category)
 	for itemID, filed in pairs(self.itemCategories) do
-		if filed == category then
-			self.itemCategories[itemID] = nil
-		end
+		if filed == category then self.itemCategories[itemID] = nil end
 	end
 end
 
@@ -355,7 +341,7 @@ function addon:RemoveBindConfirmFromCategory(slot)
 
 	local id = self.bindConfirm.id
 	local itemID = C_Item.GetItemID({ equipmentSlotIndex = slot })
-	if (itemID ~= id) then
+	if itemID ~= id then
 		debugPrint("slot %d holds %s, not the %s we confirmed", slot, tostring(itemID), tostring(id))
 		return
 	end
@@ -366,13 +352,17 @@ function addon:RemoveBindConfirmFromCategory(slot)
 	end
 
 	local category = self.itemCategories[itemID]
-	if (category ~= self.bindConfirm.category) then
-		debugPrint("%d is filed as %s, not the %s we confirmed", itemID, tostring(category),
-			tostring(self.bindConfirm.category))
+	if category ~= self.bindConfirm.category then
+		debugPrint(
+			"%d is filed as %s, not the %s we confirmed",
+			itemID,
+			tostring(category),
+			tostring(self.bindConfirm.category)
+		)
 		return
 	end
 
-	if (category == self.S_BOE or category == self.S_WUE) then
+	if category == self.S_BOE or category == self.S_WUE then
 		-- Scoped from BetterBags v0.5.2; older versions ignore the extra argument. The name has
 		-- to be the one we handed them, which is what CategoryFilter returned.
 		Categories:RemoveItemFromCategory(itemID, L:G(category))
@@ -383,13 +373,12 @@ function addon:RemoveBindConfirmFromCategory(slot)
 end
 
 -- Check if the priority addon is available
-local BetterBagsPriority = LibStub('AceAddon-3.0'):GetAddon("BetterBags_Priority", true)
-local priorityEnabled = BetterBagsPriority ~= nil or false
+local BetterBagsPriority = LibStub("AceAddon-3.0"):GetAddon("BetterBags_Priority", true)
 
-if (priorityEnabled) then
+if BetterBagsPriority then
 	---@class PriorityCategories: AceModule
 	---@field RegisterCategoryFunction fun(self: PriorityCategories, name: string, filterName: string, fn: fun(data: ItemData): string|nil): nil
-	local PriorityCategories = BetterBagsPriority:GetModule('Categories')
+	local PriorityCategories = BetterBagsPriority:GetModule("Categories")
 	-- this is required because we have multiple categories and can't really register a single function for all of them
 	local cat = Categories:GetCategoryByName(L:G("Bound"))
 	if not cat then
@@ -404,9 +393,11 @@ if (priorityEnabled) then
 	Categories:RegisterCategoryFunction("BoEBoAItemsCategoryFilter", function() return nil end)
 
 	-- categoriesWithPriority:RegisterCategoryFunction("YOUR_ADDON_TITLE", "YOUR_FILTER_NAME_HERE", fn)
-	PriorityCategories:RegisterCategoryFunction(L:G("Bound"), "BoEBoAItemsCategoryFilter", function(data)
-		return addon:CategoryFilter(data)
-	end)
+	PriorityCategories:RegisterCategoryFunction(
+		L:G("Bound"),
+		"BoEBoAItemsCategoryFilter",
+		function(data) return addon:CategoryFilter(data) end
+	)
 else
 	-- Use this API to register a function that will be called for every item in the player's bags.
 	-- The function you provide will be given an ItemData table, which contains all properties of an item
@@ -416,7 +407,8 @@ else
 	-- Results of this function, including nil, are cached, so you do not need to worry about performance
 	-- after the first scan.
 	-- Your current code goes here to maintain the current behaviour if the priority addon isn't enabled
-	Categories:RegisterCategoryFunction("BoEBoAItemsCategoryFilter", function(data)
-		return addon:CategoryFilter(data)
-	end)
+	Categories:RegisterCategoryFunction(
+		"BoEBoAItemsCategoryFilter",
+		function(data) return addon:CategoryFilter(data) end
+	)
 end

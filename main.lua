@@ -10,35 +10,28 @@ _G["BBBound"] = addon
 -- BetterBags namespace
 -----------------------------------------------------------
 ---@class BetterBags: AceAddon
-local BetterBags = LibStub('AceAddon-3.0'):GetAddon("BetterBags")
+local BetterBags = LibStub("AceAddon-3.0"):GetAddon("BetterBags")
 assert(BetterBags, addonName .. " requires BetterBags")
 
 ---@class Categories: AceModule
-local Categories = BetterBags:GetModule('Categories')
-
----@class Events: AceModule
-local Events = BetterBags:GetModule('Events')
+local Categories = BetterBags:GetModule("Categories")
 
 -- Use the L:G() function to get the localized string.
 ---@class Localization: AceModule
 ---@field G fun(self: AceModule, key: string): string
-local L = BetterBags:GetModule('Localization')
+local L = BetterBags:GetModule("Localization")
 
 ---@class Context: AceModule
 ---@field New fun(self: AceModule, key: string): Context
 ---@field Copy fun(self: AceModule): Context
-local context = BetterBags:GetModule('Context')
+local context = BetterBags:GetModule("Context")
 
 ---@class Config: AceModule
----@field AddPluginConfig fun(self: Config, name: string, options: AceConfig.OptionsTable): nil
-local Config = BetterBags:GetModule('Config')
+---@field AddPluginConfig fun(self: Config, name: string, options: table<string, AceConfig.OptionsTable>): nil
+local Config = BetterBags:GetModule("Config")
 
-addon.ctx = context:New('Bound_Event')
+addon.ctx = context:New("Bound_Event")
 addon.context = context
-
--- Lua API
------------------------------------------------------------
-local _G = _G
 
 -- WoW API
 -----------------------------------------------------------
@@ -82,13 +75,13 @@ addon.eventFrame:SetScript("OnEvent", function(_, event, ...)
 		local name = ...
 		if name == addonName then
 			addon.eventFrame:UnregisterEvent("ADDON_LOADED")
-			if (type(BetterBags_Bound_SavedVars) ~= "table") then BetterBags_Bound_SavedVars = {} end
+			if type(BetterBags_Bound_SavedVars) ~= "table" then BetterBags_Bound_SavedVars = {} end
 			local db = BetterBags_Bound_SavedVars
 			for key in pairs(addon.db) do
 				--  If our option is not present, set default value
-				if (db[key] == nil) then db[key] = addon.db[key] end
+				if db[key] == nil then db[key] = addon.db[key] end
 				-- Migrate DB for backwards compatibility
-				if (db.enableWoe ~= nil) then
+				if db.enableWoe ~= nil then
 					db.enableWue = db.enableWoe
 					db.enableWoe = nil
 				end
@@ -96,9 +89,9 @@ addon.eventFrame:SetScript("OnEvent", function(_, event, ...)
 			-- Update our reference so that changed options are saved on logout
 			addon.db = db
 			-- Wipe categories on load.
-			if (addon.db.wipeOnLoad) then
+			if addon.db.wipeOnLoad then
 				for _, category in ipairs({ addon.S_BOA, addon.S_BOE, addon.S_WUE }) do
-					Categories:WipeCategory(context:New('Bound_OnLoadWipe_' .. category), L:G(category))
+					Categories:WipeCategory(context:New("Bound_OnLoadWipe_" .. category), L:G(category))
 					addon:ForgetCategory(category)
 				end
 			end
@@ -108,6 +101,7 @@ addon.eventFrame:SetScript("OnEvent", function(_, event, ...)
 		end
 	elseif event == "EQUIP_BIND_CONFIRM" then
 		local _, itemLocation = ...
+		---@cast itemLocation ItemLocation
 		local bag, slot = itemLocation:GetBagAndSlot()
 		local id = C_Item.GetItemID(itemLocation)
 		local category = addon:GetItemCategory(bag, slot)
@@ -115,8 +109,6 @@ addon.eventFrame:SetScript("OnEvent", function(_, event, ...)
 	elseif event == "PLAYER_EQUIPMENT_CHANGED" then
 		local slot, hasCurrent = ...
 		-- hasCurrent is false if the slot was just equipped
-		if (slot ~= nil and not hasCurrent) then
-			addon:RemoveBindConfirmFromCategory(slot)
-		end
+		if slot ~= nil and not hasCurrent then addon:RemoveBindConfirmFromCategory(slot) end
 	end
 end)
