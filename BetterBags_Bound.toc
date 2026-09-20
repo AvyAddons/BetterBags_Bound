@@ -1,7 +1,7 @@
-## Interface: 120007, 120100
+## Interface: 11509, 16001, 20506, 50504, 120007, 120100
 
-## Title: BetterBags - BoE, WuE & BoA
-## Notes: Adds BoE, WuE & BoA filters to BetterBags.
+## Title: BetterBags - Bound
+## Notes: Adds "Bound on X" filters to BetterBags.
 ## Author: Avyiel
 ## Version: @project-version@
 ## IconTexture: Interface\Icons\inv_misc_bag_15

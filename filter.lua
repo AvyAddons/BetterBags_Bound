@@ -189,7 +189,7 @@ end
 ---@param slotIndex number
 ---@return string|nil
 function addon:GetItemCategory(bagIndex, slotIndex)
-	if self.IsRetail then return ScanTooltipData(bagIndex, slotIndex) end
+	if C_TooltipInfo_GetBagItem then return ScanTooltipData(bagIndex, slotIndex) end
 	return ScanTooltipFrame(bagIndex, slotIndex)
 end
 
