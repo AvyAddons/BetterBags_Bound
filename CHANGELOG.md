@@ -7,6 +7,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Added
 - Support for WoW Forever
 
+### Changed
+- Bump Retail TOC to 12.1.5
+
 ## [2.0.2] 2026-09-14
 ### Fixed
 - Items first seen in the bank no longer end up in the wrong category after being withdrawn
