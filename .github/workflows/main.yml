@@ -12,6 +12,13 @@ on:
       - ".github/**"
       - ".libraries/**"
       - ".gitmodules"
+      - ".editorconfig"
+      - ".gitignore"
+      - ".pkgmeta"
+      - ".wowluarc.json"
+      - "mise.toml"
+      - "*.md"
+      - "annotations.lua"
 
 jobs:
   release:
